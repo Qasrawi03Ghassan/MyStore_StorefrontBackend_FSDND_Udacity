@@ -1,0 +1,1 @@
+# WHEN MIGRATING IN TEST DATABASE USE "db-migrate up -e test"
