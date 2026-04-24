@@ -5,7 +5,7 @@ describe('GET /api', () => {
         await fetch(app.address)
             .get('/api').expect(200);
     });
-    it('Should return \"Server is up\" message', async () => {
+    it('Should return "Server is up" message', async () => {
         await fetch(app.address)
             .get('/api')
             .expect('Server is up');
