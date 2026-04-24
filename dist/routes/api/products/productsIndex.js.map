@@ -1,0 +1,1 @@
+{"version":3,"file":"productsIndex.js","sourceRoot":"","sources":["../../../../src/routes/api/products/productsIndex.ts"],"names":[],"mappings":"AAAA,OAAO,EAAC,MAAM,EAAoB,MAAM,SAAS,CAAC;AAElD,MAAM,cAAc,GAAG,MAAM,EAAE,CAAC;AAEhC,cAAc,CAAC,GAAG,CAAC,GAAG,EAAC,CAAC,GAAY,EAAC,GAAa,EAAE,EAAE;IAClD,GAAG,CAAC,IAAI,CAAC,gBAAgB,CAAC,CAAC;AAC/B,CAAC,CAAC,CAAC;AAEH,eAAe,cAAc,CAAC"}

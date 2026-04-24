@@ -1,0 +1,1 @@
+{"version":3,"file":"ordersIndex.js","sourceRoot":"","sources":["../../../../src/routes/api/orders/ordersIndex.ts"],"names":[],"mappings":"AAAA,OAAO,EAAC,MAAM,EAAoB,MAAM,SAAS,CAAC;AAElD,MAAM,YAAY,GAAG,MAAM,EAAE,CAAC;AAE9B,YAAY,CAAC,GAAG,CAAC,GAAG,EAAC,CAAC,GAAY,EAAC,GAAa,EAAE,EAAE;IAChD,GAAG,CAAC,IAAI,CAAC,cAAc,CAAC,CAAC;AAC7B,CAAC,CAAC,CAAC;AAEH,eAAe,YAAY,CAAC"}
