@@ -1,6 +1,6 @@
 import fetch from 'supertest';
 import app from '../server.js';
-describe('GET /', () => {
+describe('Endpoint GET /', () => {
     it('Should return 301 status code', async () => {
         await fetch(`${app.address}`)
             .get('/')

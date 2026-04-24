@@ -1,15 +1,28 @@
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
 dotenv.config();
-const { SERVER, DB_ENV, DB_NAME, DB_USER, DB_PASSWORD, DB_PORT, DB_TEST_NAME, DB_TEST_PORT } = process.env;
-const database = DB_ENV === 'DEV' ? DB_NAME : DB_TEST_NAME;
-const port = DB_ENV === 'DEV' ? DB_PORT : DB_TEST_PORT;
-const postgres = new Pool({
-    host: SERVER,
-    database: database,
-    user: DB_USER,
-    password: DB_PASSWORD,
-    port: Number(port)
-});
+const { SERVER, DB_ENV, DB_NAME, DB_TEST_NAME, DB_USER, DB_PASSWORD, DB_PORT } = process.env;
+let postgres;
+if (DB_ENV === 'test') {
+    postgres = new Pool({
+        host: SERVER,
+        database: DB_TEST_NAME,
+        user: DB_USER,
+        password: DB_PASSWORD,
+        port: Number(DB_PORT)
+    });
+}
+else if (DB_ENV === 'dev') {
+    postgres = new Pool({
+        host: SERVER,
+        database: DB_NAME,
+        user: DB_USER,
+        password: DB_PASSWORD,
+        port: Number(DB_PORT)
+    });
+}
+else {
+    throw new Error('Invalid database environment, must use "test" or "dev" only!');
+}
 export default postgres;
 //# sourceMappingURL=database.js.map

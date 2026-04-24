@@ -1,4 +1,4 @@
-import express from 'express';
+import express, {Request, Response} from 'express';
 import dotenv from 'dotenv';
 import routes from './routes/index.js';
 
@@ -13,7 +13,7 @@ const address: string = `${server}:${port}`
 
 app.use('/api',routes);
 
-app.get('/',(req,res) => {
+app.get('/',(req : Request,res : Response) => {
     res.redirect(301,'/api');
 })
 
