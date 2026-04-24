@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import routes from './routes/index.js';
+import cors from 'cors';
 dotenv.config({
     quiet: true
 });
@@ -8,6 +9,8 @@ const app = express();
 const port = process.env.PORT;
 const server = process.env.SERVER;
 const address = `${server}:${port}`;
+app.use(cors());
+app.use(express.json());
 app.use('/api', routes);
 app.get('/', (req, res) => {
     res.redirect(301, '/api');

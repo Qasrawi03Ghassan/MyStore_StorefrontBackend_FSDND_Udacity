@@ -8,7 +8,7 @@ describe('GET /api', () => {
     it('Should return "Server is up" message', async () => {
         await fetch(app.address)
             .get('/api')
-            .expect('Server is up');
+            .expect({ message: 'Server is up' });
     });
 });
 //# sourceMappingURL=indexSpec.js.map

@@ -7,7 +7,7 @@ routes.use('/products', productsRouter);
 routes.use('/orders', ordersRouter);
 routes.use('/users', usersRouter);
 routes.get('/', (req, res) => {
-    res.send('Server is up');
+    res.status(200).json({ message: 'Server is up' });
 });
 export default routes;
 //# sourceMappingURL=index.js.map

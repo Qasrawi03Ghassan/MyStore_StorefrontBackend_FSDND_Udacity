@@ -10,7 +10,7 @@ routes.use('/orders', ordersRouter);
 routes.use('/users', usersRouter);
 
 routes.get('/',(req: Request,res: Response) => {
-    res.send('Server is up');
+    res.status(200).json({message: 'Server is up'});
 });
 
 export default routes;
