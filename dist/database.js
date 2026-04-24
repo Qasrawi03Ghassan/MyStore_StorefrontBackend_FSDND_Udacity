@@ -11,6 +11,5 @@ const postgres = new Pool({
     password: DB_PASSWORD,
     port: Number(port)
 });
-console.log(`Connected to ${database} database on port ${port}`);
 export default postgres;
 //# sourceMappingURL=database.js.map

@@ -18,5 +18,7 @@ app.get('/',(req,res) => {
 })
 
 app.listen(port,()=>{
-    console.log(`Server started on ${address}`);
+    console.log(`Server started on http://${address}`);
 });
+
+export default {app,port,address};

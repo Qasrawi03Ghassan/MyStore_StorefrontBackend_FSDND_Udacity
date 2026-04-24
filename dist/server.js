@@ -13,6 +13,7 @@ app.get('/', (req, res) => {
     res.redirect(301, '/api');
 });
 app.listen(port, () => {
-    console.log(`Server started on ${address}`);
+    console.log(`Server started on http://${address}`);
 });
+export default { app, port, address };
 //# sourceMappingURL=server.js.map
