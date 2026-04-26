@@ -1,1 +1,1 @@
-# WHEN MIGRATING IN TEST DATABASE USE "db-migrate up -e test"
+# Use scripts in package.json file for migrating on a specific environment  
