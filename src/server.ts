@@ -8,8 +8,8 @@ dotenv.config({
 });
 
 const app: express.Application = express();
-const port = process.env.PORT;
-const server = process.env.SERVER;
+const port = process.env.PORT || 8080;
+const server = process.env.SERVER || 'localhost';
 const address: string = `${server}:${port}`
 
 app.use(cors());

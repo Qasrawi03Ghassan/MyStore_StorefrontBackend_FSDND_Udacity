@@ -2,8 +2,9 @@ import postgres from "../database.js";
 
 export type Product = {
     id?: number,
-    userId?: number,
-    price: string
+    name: string,
+    price: string,
+    category: string,
 };
 
 export const getProducts = async (): Promise<Product[]> => {
@@ -37,8 +38,8 @@ export const showProduct = async (productId: number): Promise<Product> => {
 export const createProduct = async (product: Product): Promise<Product> => {
     try {
         const conn = await postgres.connect();
-        const sqlq = "INSERT INTO products (user_id, price) VALUES($1, $2) RETURNING *";
-        const result = await conn.query(sqlq, [product.userId, product.price]);
+        const sqlq = "INSERT INTO products (name, price, category) VALUES($1, $2, $3) RETURNING *";
+        const result = await conn.query(sqlq, [product.name, product.price, product.category]);
         conn.release();
 
         return result.rows[0];

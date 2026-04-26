@@ -26,8 +26,8 @@ export const showProduct = async (productId) => {
 export const createProduct = async (product) => {
     try {
         const conn = await postgres.connect();
-        const sqlq = "INSERT INTO products (user_id, price) VALUES($1, $2) RETURNING *";
-        const result = await conn.query(sqlq, [product.userId, product.price]);
+        const sqlq = "INSERT INTO products (name, price, category) VALUES($1, $2, $3) RETURNING *";
+        const result = await conn.query(sqlq, [product.name, product.price, product.category]);
         conn.release();
         return result.rows[0];
     }

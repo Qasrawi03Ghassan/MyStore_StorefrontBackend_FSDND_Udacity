@@ -1,7 +1,7 @@
 import express from 'express';
 declare const _default: {
     app: express.Application;
-    port: string | undefined;
+    port: string | number;
     address: string;
 };
 export default _default;

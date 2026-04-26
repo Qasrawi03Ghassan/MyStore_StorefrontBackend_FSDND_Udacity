@@ -21,7 +21,7 @@ if(DB_ENV === 'test'){
     database: DB_TEST_NAME,
     user: DB_USER,
     password: DB_PASSWORD,
-    port: Number(DB_PORT)
+    port: Number(DB_PORT) || 5432
     });
 }else if(DB_ENV === 'dev'){
     postgres = new Pool({
@@ -29,7 +29,7 @@ if(DB_ENV === 'test'){
     database: DB_NAME,
     user: DB_USER,
     password: DB_PASSWORD,
-    port: Number(DB_PORT)
+    port: Number(DB_PORT) || 5432
     });
 }else{
     throw new Error('Invalid database environment, must use "test" or "dev" only!');

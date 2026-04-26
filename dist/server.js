@@ -6,8 +6,8 @@ dotenv.config({
     quiet: true
 });
 const app = express();
-const port = process.env.PORT;
-const server = process.env.SERVER;
+const port = process.env.PORT || 8080;
+const server = process.env.SERVER || 'localhost';
 const address = `${server}:${port}`;
 app.use(cors());
 app.use(express.json());

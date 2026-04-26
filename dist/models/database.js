@@ -9,7 +9,7 @@ if (DB_ENV === 'test') {
         database: DB_TEST_NAME,
         user: DB_USER,
         password: DB_PASSWORD,
-        port: Number(DB_PORT)
+        port: Number(DB_PORT) || 5432
     });
 }
 else if (DB_ENV === 'dev') {
@@ -18,7 +18,7 @@ else if (DB_ENV === 'dev') {
         database: DB_NAME,
         user: DB_USER,
         password: DB_PASSWORD,
-        port: Number(DB_PORT)
+        port: Number(DB_PORT) || 5432
     });
 }
 else {

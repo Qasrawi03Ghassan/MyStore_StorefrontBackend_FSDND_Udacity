@@ -1,7 +1,8 @@
 export type Product = {
     id?: number;
-    userId?: number;
+    name: string;
     price: string;
+    category: string;
 };
 export declare const getProducts: () => Promise<Product[]>;
 export declare const showProduct: (productId: number) => Promise<Product>;
