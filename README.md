@@ -50,6 +50,7 @@ DB_PORT=5432
 # JWT secrets
 SALT=10
 PEPPER=mystoresupersecretpassword!23
+JWT_SECRET=secretjwtstorefrontkey!23
 ```
 
 ### 4. Database migrations
