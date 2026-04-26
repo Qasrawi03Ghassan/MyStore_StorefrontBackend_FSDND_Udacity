@@ -6,7 +6,7 @@ productsRouter.get('/', async (req, res) => {
         const products = await getProducts();
         res.status(200).json({ products });
     }
-    catch (err) {
+    catch (err) { //Error type is unknown, so using any
         res.status(500).json({ error: 'Failed to fetch products', stack: err.stack });
     }
 });
@@ -15,7 +15,7 @@ productsRouter.get('/most-popular', async (req, res) => {
         const products = await getTop5MostPopularProducts();
         res.status(200).json({ products });
     }
-    catch (err) {
+    catch (err) { //Error type is unknown, so using any
         res.status(500).json({ error: 'Failed to fetch most popular products', stack: err.stack });
     }
 });
@@ -34,7 +34,7 @@ productsRouter.get('/get-by-cat', async (req, res) => {
         const products = await getProductsByCategory(productCategory);
         res.status(200).json({ products });
     }
-    catch (err) {
+    catch (err) { //Error type is unknown, so using any
         res.status(500).json({ error: 'Failed to fetch products by category', stack: err.stack });
     }
 });
@@ -44,7 +44,7 @@ productsRouter.get('/:id', async (req, res) => {
         const product = await showProduct(productId);
         res.status(200).json({ product });
     }
-    catch (err) {
+    catch (err) { //Error type is unknown, so using any
         res.status(500).json({ error: `Failed to fetch product ${productId}`, stack: err.stack });
     }
 });
@@ -54,7 +54,7 @@ productsRouter.post('/', async (req, res) => {
         const product = await createProduct(req.body);
         res.status(200).json({ product });
     }
-    catch (err) {
+    catch (err) { //Error type is unknown, so using any
         res.status(500).json({ error: 'Failed to create product', stack: err.stack });
     }
 });

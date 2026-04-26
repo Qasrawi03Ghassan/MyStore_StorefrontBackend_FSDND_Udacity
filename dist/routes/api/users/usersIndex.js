@@ -7,7 +7,7 @@ usersRouter.get('/', async (req, res) => {
         const users = await getUsers();
         res.status(200).json({ users });
     }
-    catch (err) {
+    catch (err) { //Error type is unknown, so using any
         res.status(500).json({ error: 'Failed to fetch users', stack: err.stack });
     }
 });
@@ -22,7 +22,7 @@ usersRouter.get('/:id', async (req, res) => {
         const user = await showUserById(userId);
         res.status(200).json({ user });
     }
-    catch (err) {
+    catch (err) { //Error type is unknown, so using any
         res.status(500).json({ error: 'Failed to fetch user', stack: err.stack });
     }
 });
@@ -32,7 +32,7 @@ usersRouter.post('/', async (req, res) => {
         const user = await createUser(req.body);
         res.status(200).json({ user });
     }
-    catch (err) {
+    catch (err) { //Error type is unknown, so using any
         res.status(500).json({ error: 'Failed to create user', stack: err.stack });
     }
 });

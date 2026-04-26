@@ -13,7 +13,7 @@ const{
     DB_PORT
 } = process.env
 
-let postgres: Pool;
+let postgres: Pool; //Using let to allow reassignment based on environment variable.
 
 if(DB_ENV === 'test'){
     postgres = new Pool({
