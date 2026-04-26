@@ -1,5 +1,5 @@
 import {Router, Request, Response} from 'express';
-import {Product, getProducts, showProduct, getTop5MostPopularProducts, getProductsByCategory} from '../../../models/product/product.js';
+import {Product, getProducts, showProduct, getTop5MostPopularProducts, getProductsByCategory, createProduct} from '../../../models/product/product.js';
 
 const productsRouter = Router();
 
@@ -33,7 +33,7 @@ productsRouter.get('/get-by-cat', async (req: Request,res: Response) =>  {
         console.error('Invalid product category parameter');
         return res.status(400).json({error: 'Invalid product category parameter,must be a string'});
     }
-    
+
     try{
         const products: Product[] = await getProductsByCategory(productCategory);
         res.status(200).json({products});
@@ -52,5 +52,16 @@ productsRouter.get('/:id', async (req: Request,res: Response) =>  {
         res.status(500).json({error: `Failed to fetch product ${productId}`,stack: err.stack});
     }
 });
+
+//Todo: add jwt
+productsRouter.post('/', async (req: Request,res: Response) =>  {
+    try{
+        const product: Product = await createProduct(req.body);
+        res.status(200).json({product});
+    }catch(err :any){
+        res.status(500).json({error: 'Failed to create product',stack: err.stack});
+    }
+});
+
 
 export default productsRouter;

@@ -50,7 +50,7 @@ export const getProductsByCategory = async (productCategory) => {
 export const getTop5MostPopularProducts = async () => {
     try {
         const conn = await postgres.connect();
-        const sqlq = "SELECT * FROM products WHERE id IN (SELECT product_id FROM order_products GROUP BY product_id ORDER BY SUM(quantity) DESC LIMIT 5)";
+        const sqlq = "SELECT * FROM products WHERE id IN (SELECT product_id FROM products_orders GROUP BY product_id ORDER BY SUM(quantity) DESC LIMIT 5)";
         const result = await conn.query(sqlq);
         conn.release();
         return result.rows;

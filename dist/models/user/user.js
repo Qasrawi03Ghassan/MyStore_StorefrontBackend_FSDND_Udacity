@@ -26,7 +26,7 @@ export const showUserById = async (userId) => {
 export const showUserByFirstNameAndLastName = async (firstName, lastName) => {
     try {
         const conn = await postgres.connect();
-        const sql = "SELECT * FROM users WHERE firstName=($1) AND lastName=($2)";
+        const sql = "SELECT * FROM users WHERE first_name=($1) AND last_name=($2)";
         const result = await conn.query(sql, [firstName, lastName]);
         conn.release();
         return result.rows[0];
@@ -38,7 +38,7 @@ export const showUserByFirstNameAndLastName = async (firstName, lastName) => {
 export const createUser = async (user) => {
     try {
         const conn = await postgres.connect();
-        const sql = "INSERT INTO users (firstName, lastName, passwordHash) VALUES($1, $2, $3) RETURNING *";
+        const sql = "INSERT INTO users (first_name, last_name, password_digest) VALUES($1, $2, $3) RETURNING *";
         const result = await conn.query(sql, [user.firstName, user.lastName, user.passwordHash]);
         conn.release();
         return result.rows[0];
