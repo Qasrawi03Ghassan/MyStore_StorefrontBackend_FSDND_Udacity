@@ -47,3 +47,36 @@ export const createOrder = async (order: Order, product_id: number, quantity: nu
         throw new Error(`Could not create order for user ${order.user_id}. Error: ${err}`);
     }
 }
+
+export const updateOrderStatus = async (orderId: number, status: string): Promise<Order> => {
+    try {
+        const conn = await postgres.connect();
+        const sql = "UPDATE orders SET status=($1) WHERE id=($2) RETURNING *";
+        const result = await conn.query(sql, [status, orderId]);
+        conn.release();
+        return result.rows[0];
+    } catch (err) {
+        throw new Error(`Could not update order ${orderId} status to ${status}. Error: ${err}`);
+    }
+}
+
+export const deleteOrder = async (orderId: number): Promise<Order> => {
+    const conn = await postgres.connect();
+    try {
+        await conn.query("BEGIN");
+        await conn.query("DELETE FROM products_orders WHERE order_id=($1)", [orderId]);
+
+        const sql = "DELETE FROM orders WHERE id=($1) RETURNING *";
+        const result = await conn.query(sql, [orderId]);
+
+        await conn.query("COMMIT");
+
+        return result.rows[0];
+    } catch (err) {
+        await conn.query("ROLLBACK");
+        throw new Error(`Could not delete order ${orderId}. Error: ${err}`);
+    }
+    finally {
+        conn.release();
+    }
+}

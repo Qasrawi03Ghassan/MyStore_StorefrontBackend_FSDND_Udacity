@@ -63,7 +63,7 @@ productsRouter.get('/:id', async (req: Request,res: Response) =>  {
     }
 });
 
-productsRouter.post('/:id', verifyAuthToken,async (req: Request,res: Response) =>  {
+productsRouter.put('/:id', verifyAuthToken,async (req: Request,res: Response) =>  {
     const id = Number(req.params.id);
     const {name, price, category} = req.body;
     if(!id || !name || !price){
