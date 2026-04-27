@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 dotenv.config({ quiet: true });
 const authRouter = Router();
 authRouter.get('/', async (req, res) => {
-    res.status(200).json({ message: 'Reached Auth Index Route' });
+    res.status(200).json({ message: 'auth is up' });
 });
 authRouter.post('/register', async (req, res) => {
     const { first_name, last_name, password } = req.body;

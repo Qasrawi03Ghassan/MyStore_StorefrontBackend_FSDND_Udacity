@@ -9,7 +9,7 @@ dotenv.config({quiet: true});
 const authRouter = Router();
 
 authRouter.get('/', async (req: Request, res: Response) => {
-    res.status(200).json({message: 'Reached Auth Index Route'});
+    res.status(200).json({message: 'auth is up'});
 });
 
 authRouter.post('/register', async (req: Request, res: Response) => {
