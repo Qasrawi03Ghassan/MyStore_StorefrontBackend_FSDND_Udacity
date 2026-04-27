@@ -59,4 +59,40 @@ export const getTop5MostPopularProducts = async () => {
         throw new Error(`Couldn't get top 5 products: ${err}`);
     }
 };
+export const updateProduct = async (product) => {
+    try {
+        const conn = await postgres.connect();
+        let sqlq = '';
+        if (product.category === null || product.category === undefined) {
+            sqlq = "UPDATE products SET name=($1), price=($2) WHERE id=($3) RETURNING *";
+        }
+        else {
+            sqlq = "UPDATE products SET name=($1), price=($2), category=($3) WHERE id=($4) RETURNING *";
+        }
+        const result = await conn.query(sqlq, [product.name, product.price, product.category, product.id]);
+        conn.release();
+        return result.rows[0];
+    }
+    catch (err) {
+        throw new Error(`Couldn't update product ${product.id}: ${err}`);
+    }
+};
+export const deleteProduct = async (productId) => {
+    const conn = await postgres.connect();
+    try {
+        await conn.query("BEGIN");
+        await conn.query("DELETE FROM products_orders WHERE product_id=($1)", [productId]);
+        const sql = "DELETE FROM products WHERE id=($1) RETURNING *";
+        const result = await conn.query(sql, [productId]);
+        await conn.query("COMMIT");
+        return result.rows[0];
+    }
+    catch (err) {
+        await conn.query("ROLLBACK");
+        throw new Error(`Couldn't delete product ${productId}: ${err}`);
+    }
+    finally {
+        conn.release();
+    }
+};
 //# sourceMappingURL=product.js.map

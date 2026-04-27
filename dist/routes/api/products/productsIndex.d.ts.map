@@ -1,1 +1,1 @@
-{"version":3,"file":"productsIndex.d.ts","sourceRoot":"","sources":["../../../../src/routes/api/products/productsIndex.ts"],"names":[],"mappings":"AAGA,QAAA,MAAM,cAAc,4CAAW,CAAC;AA+DhC,eAAe,cAAc,CAAC"}
+{"version":3,"file":"productsIndex.d.ts","sourceRoot":"","sources":["../../../../src/routes/api/products/productsIndex.ts"],"names":[],"mappings":"AAIA,QAAA,MAAM,cAAc,4CAAW,CAAC;AA8FhC,eAAe,cAAc,CAAC"}

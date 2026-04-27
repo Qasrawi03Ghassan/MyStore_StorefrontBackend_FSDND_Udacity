@@ -1,1 +1,1 @@
-{"version":3,"file":"usersIndex.d.ts","sourceRoot":"","sources":["../../../../src/routes/api/users/usersIndex.ts"],"names":[],"mappings":"AAQA,QAAA,MAAM,WAAW,4CAAW,CAAC;AAuC7B,eAAe,WAAW,CAAC"}
+{"version":3,"file":"usersIndex.d.ts","sourceRoot":"","sources":["../../../../src/routes/api/users/usersIndex.ts"],"names":[],"mappings":"AAQA,QAAA,MAAM,WAAW,4CAAW,CAAC;AAwC7B,eAAe,WAAW,CAAC"}

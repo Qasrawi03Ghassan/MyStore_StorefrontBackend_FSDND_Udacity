@@ -1,34 +1,56 @@
 import { Router } from 'express';
-import { createOrder, getCompletedOrders, getCurrentOrders } from '../../../models/order/order.js';
+import { createOrder, deleteOrder, getCompletedOrders, getCurrentOrders, updateOrderStatus } from '../../../models/order/order.js';
+import { verifyAuthToken } from '../middleware/mwIndex.js';
 const ordersRouter = Router();
-//TODO: add jwt
-ordersRouter.get('/', async (req, res) => {
+ordersRouter.get('/', verifyAuthToken, async (req, res) => {
     try {
         const orders = await getCurrentOrders(req.body.user_id);
-        res.status(200).json(orders);
+        res.status(200).json({ message: 'Active orders fetched successfully', orders });
     }
     catch (err) { //Error type is unknown, so using any
         res.status(500).json({ message: 'Error fetching active orders', stack: err.stack });
     }
 });
-//TODO: add jwt
-ordersRouter.get('/completed', async (req, res) => {
+ordersRouter.get('/completed', verifyAuthToken, async (req, res) => {
     try {
         const orders = await getCompletedOrders(req.body.user_id);
-        res.status(200).json(orders);
+        res.status(200).json({ message: 'Completed orders fetched successfully', orders });
     }
     catch (err) { //Error type is unknown, so using any
         res.status(500).json({ message: 'Error fetching completed orders', stack: err.stack });
     }
 });
-//TODO: add jwt
-ordersRouter.post('/', async (req, res) => {
+ordersRouter.post('/', verifyAuthToken, async (req, res) => {
     try {
         const order = await createOrder(req.body, req.body.product_id, req.body.quantity);
-        res.status(200).json({ order });
+        res.status(200).json({ message: 'Order created successfully', order });
     }
     catch (err) { //Error type is unknown, so using any
         res.status(500).json({ message: 'Error creating order', stack: err.stack });
+    }
+});
+ordersRouter.put('/:id', verifyAuthToken, async (req, res) => {
+    const orderId = Number(req.params.id);
+    const { status } = req.body;
+    if (!status || (status !== 'active' && status !== 'completed')) {
+        return res.status(400).json({ error: 'Missing required field: status is required and must be active or completed only' });
+    }
+    try {
+        const order = await updateOrderStatus(orderId, status);
+        res.status(200).json({ message: 'Order status updated successfully', order });
+    }
+    catch (err) { //Error type is unknown, so using any
+        res.status(500).json({ message: 'Error updating order status', stack: err.stack });
+    }
+});
+ordersRouter.delete('/:id', verifyAuthToken, async (req, res) => {
+    const orderId = Number(req.params.id);
+    try {
+        const order = await deleteOrder(orderId);
+        res.status(200).json({ message: 'Order deleted successfully', order });
+    }
+    catch (err) { //Error type is unknown, so using any
+        res.status(500).json({ message: 'Error deleting order', stack: err.stack });
     }
 });
 export default ordersRouter;

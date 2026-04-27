@@ -1,1 +1,1 @@
-{"version":3,"file":"authIndex.d.ts","sourceRoot":"","sources":["../../../../src/routes/api/auth/authIndex.ts"],"names":[],"mappings":"AAQA,QAAA,MAAM,UAAU,4CAAW,CAAC;AAwD5B,eAAe,UAAU,CAAC"}
+{"version":3,"file":"authIndex.d.ts","sourceRoot":"","sources":["../../../../src/routes/api/auth/authIndex.ts"],"names":[],"mappings":"AAQA,QAAA,MAAM,UAAU,4CAAW,CAAC;AAyD5B,eAAe,UAAU,CAAC"}
