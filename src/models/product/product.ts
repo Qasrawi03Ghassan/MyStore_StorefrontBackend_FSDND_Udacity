@@ -93,14 +93,21 @@ export const updateProduct = async (product: Product): Promise<Product> => {
 }
 
 export const deleteProduct = async (productId: number): Promise<Product> => {
+    const conn = await postgres.connect();
     try {
-        const conn = await postgres.connect();
-        const sqlq = "DELETE FROM products WHERE id=($1) RETURNING *";
-        const result = await conn.query(sqlq, [productId]);
-        conn.release();
+        await conn.query("BEGIN");
+        await conn.query("DELETE FROM products_orders WHERE product_id=($1)", [productId]);
+
+        const sql = "DELETE FROM products WHERE id=($1) RETURNING *";
+        const result = await conn.query(sql, [productId]);
+
+        await conn.query("COMMIT");
 
         return result.rows[0];
     }catch(err){
+        await conn.query("ROLLBACK");
         throw new Error(`Couldn't delete product ${productId}: ${err}`);
+    }finally {
+        conn.release();
     }
 }
