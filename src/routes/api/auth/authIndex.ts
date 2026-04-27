@@ -6,13 +6,13 @@ import jwt from 'jsonwebtoken';
 
 dotenv.config({quiet: true});
 
-const authIndex = Router();
+const authRouter = Router();
 
-authIndex.get('/', async (req: Request, res: Response) => {
+authRouter.get('/', async (req: Request, res: Response) => {
     res.status(200).json({message: 'Reached Auth Index Route'});
 });
 
-authIndex.post('/register', async (req: Request, res: Response) => {
+authRouter.post('/register', async (req: Request, res: Response) => {
     const {first_name, last_name, password} = req.body;
     if(!first_name || !last_name || !password){
         return res.status(400).json({error: 'Missing required fields: first_name, last_name, and password are required'});
@@ -30,7 +30,7 @@ authIndex.post('/register', async (req: Request, res: Response) => {
     }
 });
 
-authIndex.post('/login', async (req: Request, res: Response) => {
+authRouter.post('/login', async (req: Request, res: Response) => {
     const {first_name, last_name, password} = req.body;
     if(!first_name || !last_name || !password){
         return res.status(400).json({error: 'Missing required fields: first_name, last_name, and password are required'});
@@ -61,4 +61,5 @@ authIndex.post('/login', async (req: Request, res: Response) => {
     }
 });
 
-export default authIndex;
+
+export default authRouter;

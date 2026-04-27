@@ -47,7 +47,7 @@ DB_NAME=storefront_db
 DB_TEST_NAME=storefront_db_test
 DB_PORT=5432
 
-# JWT secrets
+# Bcrypt and JWT secrets
 SALT=10
 PEPPER=mystoresupersecretpassword!23
 JWT_SECRET=secretjwtstorefrontkey!23
