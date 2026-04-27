@@ -73,3 +73,34 @@ export const getTop5MostPopularProducts = async (): Promise<Product[]> => {
         throw new Error(`Couldn't get top 5 products: ${err}`);
     }
 }
+
+export const updateProduct = async (product: Product): Promise<Product> => {
+    try {
+        const conn = await postgres.connect();
+        let sqlq='';
+        if(product.category === null || product.category === undefined){
+            sqlq = "UPDATE products SET name=($1), price=($2) WHERE id=($3) RETURNING *";
+        }else{
+            sqlq = "UPDATE products SET name=($1), price=($2), category=($3) WHERE id=($4) RETURNING *";
+        }
+        const result = await conn.query(sqlq, [product.name, product.price, product.category, product.id]);
+        conn.release();
+
+        return result.rows[0];
+    }catch(err){
+        throw new Error(`Couldn't update product ${product.id}: ${err}`);
+    }
+}
+
+export const deleteProduct = async (productId: number): Promise<Product> => {
+    try {
+        const conn = await postgres.connect();
+        const sqlq = "DELETE FROM products WHERE id=($1) RETURNING *";
+        const result = await conn.query(sqlq, [productId]);
+        conn.release();
+
+        return result.rows[0];
+    }catch(err){
+        throw new Error(`Couldn't delete product ${productId}: ${err}`);
+    }
+}

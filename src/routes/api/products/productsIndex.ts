@@ -1,5 +1,5 @@
 import {Router, Request, Response} from 'express';
-import {Product, getProducts, showProduct, getTop5MostPopularProducts, getProductsByCategory, createProduct} from '../../../models/product/product.js';
+import {Product, getProducts, showProduct, getTop5MostPopularProducts, getProductsByCategory, createProduct, updateProduct, deleteProduct} from '../../../models/product/product.js';
 import { verifyAuthToken } from '../middleware/mwIndex.js';
 
 const productsRouter = Router();
@@ -43,6 +43,15 @@ productsRouter.get('/get-by-cat', async (req: Request,res: Response) =>  {
     }
 });
 
+productsRouter.post('/', verifyAuthToken,async (req: Request,res: Response) =>  {
+    try{
+        const product: Product = await createProduct(req.body);
+        res.status(200).json({message:"Product created successfully",product});
+    }catch(err :any){//Error type is unknown, so using any
+        res.status(500).json({error: 'Failed to create product',stack: err.stack});
+    }
+});
+
 productsRouter.get('/:id', async (req: Request,res: Response) =>  {
     const productId = Number(req.params.id);
     
@@ -54,14 +63,37 @@ productsRouter.get('/:id', async (req: Request,res: Response) =>  {
     }
 });
 
-productsRouter.post('/', verifyAuthToken,async (req: Request,res: Response) =>  {
+productsRouter.post('/:id', verifyAuthToken,async (req: Request,res: Response) =>  {
+    const id = Number(req.params.id);
+    const {name, price, category} = req.body;
+    if(!id || !name || !price){
+        return res.status(400).json({error: 'Missing required fields: id, name and price are required'});
+    }
     try{
-        const product: Product = await createProduct(req.body);
-        res.status(200).json({message:"Product created successfully",product});
+        const product: Product = await showProduct(id);
+        if(!product){
+            return res.status(404).json({error: `Product with ID ${id} not found`});
+        }
+        const updatedProduct: Product = await updateProduct({id, name, price, category});
+        res.status(200).json({message: `Product ${id} updated successfully`, product: updatedProduct});
     }catch(err :any){//Error type is unknown, so using any
-        res.status(500).json({error: 'Failed to create product',stack: err.stack});
+        res.status(500).json({error: `Failed to update product ${id}`,stack: err.stack});
     }
 });
 
+productsRouter.delete('/:id', verifyAuthToken,async (req: Request,res: Response) =>  {
+    const productId = Number(req.params.id);
+
+    try{
+        const product: Product = await showProduct(productId);
+        if(!product){
+            return res.status(404).json({error: `Product with ID ${productId} not found`});
+        }
+        const deletedProduct: Product = await deleteProduct(productId);
+        res.status(200).json({message: `Product ${productId} deleted successfully`, product: deletedProduct});
+    }catch(err :any){//Error type is unknown, so using any
+        res.status(500).json({error: `Failed to delete product ${productId}`,stack: err.stack});
+    }
+});
 
 export default productsRouter;

@@ -18,6 +18,20 @@ usersRouter.get('/', verifyAuthToken,async (req: Request,res: Response) => {
     }
 });
 
+usersRouter.post('/', verifyAuthToken,async (req: Request,res: Response) => {
+    const {first_name, last_name, password} = req.body;
+    if(!first_name || !last_name || !password){
+        return res.status(400).json({error: 'Missing required fields: first_name, last_name, and password are required'});
+    }
+    try{
+        const password_digest = bcrypt.hashSync(password + process.env.PEPPER, Number.parseInt(process.env.SALT as string) || 10);
+        const user: User = await createUser({first_name, last_name, password_digest});
+        res.status(200).json({"message": "User created successfully", "user":user});
+    }catch(err :any){//Error type is unknown, so using any
+        res.status(500).json({error: 'Failed to create user',stack: err.stack});
+    }
+});
+
 usersRouter.get('/:id', verifyAuthToken,async (req: Request,res: Response) => {
     const userId = Number(req.params.id);
     if(userId <= 0 || Number.isNaN(userId)){
@@ -32,17 +46,4 @@ usersRouter.get('/:id', verifyAuthToken,async (req: Request,res: Response) => {
     }
 });
 
-usersRouter.post('/', verifyAuthToken,async (req: Request,res: Response) => {
-    const {first_name, last_name, password} = req.body;
-    if(!first_name || !last_name || !password){
-        return res.status(400).json({error: 'Missing required fields: first_name, last_name, and password are required'});
-    }
-    try{
-        const password_digest = bcrypt.hashSync(password + process.env.PEPPER, Number.parseInt(process.env.SALT as string) || 10);
-        const user: User = await createUser({first_name, last_name, password_digest});
-        res.status(200).json({"message": "User created successfully", "user":user});
-    }catch(err :any){//Error type is unknown, so using any
-        res.status(500).json({error: 'Failed to create user',stack: err.stack});
-    }
-});
 export default usersRouter;
