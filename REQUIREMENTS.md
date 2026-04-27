@@ -50,23 +50,54 @@ The company stakeholders want to create an online storefront to showcase their g
 
 ---
 
-## Database Schema (Tables and relations between them)
+## Database Schema ( Tables / Relations)
 
-#### Product
--  id
-- name
-- price
-- [OPTIONAL] category
+### Product
 
-#### User
-- id
-- firstName
-- lastName
-- password
+| COLUMN                                | TYPE                 | IS NULL ALLOWED (DEFAULT?)|
+|---------------------------------------|----------------------|---------------------------|
+|id                                     | `SERIAL PRIMARY KEY` |    NO                     |
+|name                                   | `VARCHAR(30)`        |    NO                     |
+|price                                  |   `INTEGER`          |    NO(0)                  |
+|category                               |   `VARCHAR(50)`      |    YES                    |
 
-#### Orders
-- id
-- id of each product in the order
-- quantity of each product in the order
-- user_id
-- status of order (active or complete)
+---
+
+### User
+
+| COLUMN                                | TYPE                 | IS NULL ALLOWED (DEFAULT?)|
+|---------------------------------------|----------------------|---------------------------|
+|id                                     | `SERIAL PRIMARY KEY` |    NO                     |
+|first_name                             | `VARCHAR(30)`        |    NO                     |
+|last_name                              |   `VARCHAR(30)`      |    NO                     |
+|password_digest                        |   `VARCHAR(255)`     |    NO                     |
+
+---
+
+### Orders
+
+| COLUMN                                | TYPE                          | IS NULL ALLOWED (DEFAULT?)|
+|---------------------------------------|-------------------------------|---------------------------|
+|id                                     | `SERIAL PRIMARY KEY`          |    NO                     |
+|user_id (Foreign key)                  | `INTEGER REFERENCES users(id)`|    NO                     |
+|status                                 |   `VARCHAR(20)`               |    NO   (`active`)        |
+
+---
+
+### Products_Orders (Junction table)
+
+| COLUMN                                | TYPE                          | IS NULL ALLOWED (DEFAULT?)|
+|---------------------------------------|-------------------------------|---------------------------|
+|product_id  (Foreign key)              | `INTEGER PRIMARY KEY`         |    NO                     |
+|order_id     (Foreign key)             | `INTEGER PRIMARY KEY`         |    NO                     |
+|quantity                               | `INTEGER`                     |    NO   (0)               |
+
+---
+
+### Relations
+
+Products : Orders ==> M : N (Implemented a junction table)  
+
+Products : Users ==> M : 1  
+
+Orders : Users ==> M : 1
