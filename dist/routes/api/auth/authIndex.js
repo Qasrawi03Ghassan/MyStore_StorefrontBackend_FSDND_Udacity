@@ -4,11 +4,11 @@ import { createUser, showUserByFirstNameAndLastName } from '../../../models/user
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 dotenv.config({ quiet: true });
-const authIndex = Router();
-authIndex.get('/', async (req, res) => {
+const authRouter = Router();
+authRouter.get('/', async (req, res) => {
     res.status(200).json({ message: 'Reached Auth Index Route' });
 });
-authIndex.post('/register', async (req, res) => {
+authRouter.post('/register', async (req, res) => {
     const { first_name, last_name, password } = req.body;
     if (!first_name || !last_name || !password) {
         return res.status(400).json({ error: 'Missing required fields: first_name, last_name, and password are required' });
@@ -26,7 +26,7 @@ authIndex.post('/register', async (req, res) => {
         res.status(500).json({ error: 'Couldn\'t register user' });
     }
 });
-authIndex.post('/login', async (req, res) => {
+authRouter.post('/login', async (req, res) => {
     const { first_name, last_name, password } = req.body;
     if (!first_name || !last_name || !password) {
         return res.status(400).json({ error: 'Missing required fields: first_name, last_name, and password are required' });
@@ -51,5 +51,5 @@ authIndex.post('/login', async (req, res) => {
         res.status(500).json({ error: 'Couldn\'t login' });
     }
 });
-export default authIndex;
+export default authRouter;
 //# sourceMappingURL=authIndex.js.map

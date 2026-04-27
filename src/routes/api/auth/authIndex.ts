@@ -54,6 +54,7 @@ authRouter.post('/login', async (req: Request, res: Response) => {
                 last_name: user.last_name
             },
             process.env.JWT_SECRET || 'defaultsecretkey!23',
+            {expiresIn: '1h'}
         );
         res.status(200).json({message: 'Login successful', token});
     }catch{
