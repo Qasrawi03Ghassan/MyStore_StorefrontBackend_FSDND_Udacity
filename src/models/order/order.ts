@@ -32,11 +32,11 @@ export const getCompletedOrders = async (userId: number): Promise<Order[]> => {
     }
 };
 
-export const createOrder = async (order: Order, product_id: number, quantity: number): Promise<Order> => {
+export const createOrder = async (user_id:number, status:string, product_id: number, quantity: number): Promise<Order> => {
     try {
         const conn = await postgres.connect();
         const sql1 = "INSERT INTO orders (user_id, status) VALUES($1, 'active') RETURNING *";
-        const result1 = await conn.query(sql1, [order.user_id]);
+        const result1 = await conn.query(sql1, [user_id]);
         conn.release();
 
         const sql2 = "INSERT INTO products_orders (product_id, order_id, quantity) VALUES($1, $2, $3)";
@@ -44,7 +44,7 @@ export const createOrder = async (order: Order, product_id: number, quantity: nu
 
         return result1.rows[0];
     } catch (err) {
-        throw new Error(`Could not create order for user ${order.user_id}. Error: ${err}`);
+        throw new Error(`Could not create order for user ${user_id}. Error: ${err}`);
     }
 }
 

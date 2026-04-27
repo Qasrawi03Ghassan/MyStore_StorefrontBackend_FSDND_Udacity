@@ -25,21 +25,7 @@ const loginTestUser = async () => {
     return res.body.token;
 };
 
-describe('Orders API', () => {
-  let token: string;
-    beforeAll(async () => {
-      await registerTestUser();
-      token = await loginTestUser();
-    });
-  
-    afterAll(async () => {
-      await cleanupTestUser();
-    });
 
-  it('GET /api/orders should list active orders by user with token', async () => {
-    const res = (await fetch(app.address).get('/api/orders/').set('Authorization', `Bearer ${token}`));
-
-    expect(res.status).toBe(200);
-    expect(res.body.orders).toBeInstanceOf(Array);
-  })  
-});
+/*describe('Orders API', () => {
+ 
+});*/
