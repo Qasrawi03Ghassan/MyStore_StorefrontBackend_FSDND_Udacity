@@ -11,7 +11,7 @@ const cleanupTestUser = async () => {
         client.release();
     }
 };
-/*describe('Orders API', () => {
+/*describe('Users API', () => {
     
 });*/
-//# sourceMappingURL=orderIndexSpec.js.map
+//# sourceMappingURL=userIndexSpec.js.map
