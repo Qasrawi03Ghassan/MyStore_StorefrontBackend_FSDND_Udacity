@@ -32,8 +32,8 @@ The company stakeholders want to create an online storefront to showcase their g
 
 | Endpoint                              | Endpoint Description              | Method | Arguments                                     | Token Required | Optional |
 |---------------------------------------|-----------------------------------|--------|-----------------------------------------------|----------------|----------|
-|`GET /api/orders`                      | List active orders by user        | `GET`  | user id (user_id)                             | Yes            | No       |
-|`GET /api/orders/completed`            | List completed orders by user     | `GET`  | user id (user_id)                             | Yes            | Yes      |
+|`GET /api/orders/:id`                  | List active orders by user        | `GET`  | user id (user_id)                             | Yes            | No       |
+|`GET /api/orders/completed/:id`        | List completed orders by user     | `GET`  | user id (user_id)                             | Yes            | Yes      |
 |`POST /api/orders`                     | Create order for user             | `POST` | (user_id, product_id, quantity[optional])     | Yes            | No       |
 |`PUT /api/orders/:id`                  | Update single order               | `PUT`  | order id & data                               | No             | Yes      |
 |`DELETE /api/orders/:id`               | Delete single order               |`DELETE`| order id                                      | Yes            | Yes      |

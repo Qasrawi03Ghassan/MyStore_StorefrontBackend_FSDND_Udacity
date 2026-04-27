@@ -5,8 +5,12 @@ import { verifyAuthToken } from '../middleware/mwIndex.js';
 const ordersRouter = Router();
 
 ordersRouter.get('/', verifyAuthToken,async (req: Request,res: Response) => {
+    const user_id = Number(req.query.user_id);
+    if(!user_id || user_id === undefined || Number.isNaN(user_id)){
+        return res.status(400).json({error:"invalid parameter"})
+    }
     try{
-        const orders: Order[] = await getCurrentOrders(req.body.user_id);
+        const orders: Order[] = await getCurrentOrders(user_id);
         res.status(200).json({message: 'Active orders fetched successfully', orders});
     }catch(err: any){ //Error type is unknown, so using any
         res.status(500).json({message: 'Error fetching active orders',stack: err.stack});
@@ -14,8 +18,12 @@ ordersRouter.get('/', verifyAuthToken,async (req: Request,res: Response) => {
 });
 
 ordersRouter.get('/completed', verifyAuthToken,async (req: Request,res: Response) => {
+    const user_id = Number(req.query.user_id);
+    if(!user_id || user_id === undefined || Number.isNaN(user_id)){
+        return res.status(400).json({error:"invalid parameter"})
+    }
     try{
-        const orders: Order[] = await getCompletedOrders(req.body.user_id);
+        const orders: Order[] = await getCompletedOrders(user_id);
         res.status(200).json({message: 'Completed orders fetched successfully', orders});
     }catch(err: any){ //Error type is unknown, so using any
         res.status(500).json({message: 'Error fetching completed orders',stack: err.stack});
