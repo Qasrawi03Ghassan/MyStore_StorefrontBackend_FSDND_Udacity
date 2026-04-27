@@ -2,9 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import routes from './routes/index.js';
 import cors from 'cors';
-dotenv.config({
-    quiet: true
-});
+dotenv.config({ quiet: true });
 const app = express();
 const port = process.env.PORT || 8080;
 const server = process.env.SERVER || 'localhost';

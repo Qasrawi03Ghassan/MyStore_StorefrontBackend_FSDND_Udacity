@@ -3,9 +3,7 @@ import dotenv from 'dotenv';
 import routes from './routes/index.js';
 import cors from 'cors';
 
-dotenv.config({
-    quiet:true
-});
+dotenv.config({quiet: true});
 
 const app: express.Application = express();
 const port = process.env.PORT || 8080;

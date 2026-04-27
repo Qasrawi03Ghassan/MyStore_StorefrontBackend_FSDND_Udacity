@@ -4,7 +4,7 @@ import {verifyAuthToken} from '../middleware/mwIndex.js';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config({quiet: true});
 
 const usersRouter = Router();
 

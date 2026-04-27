@@ -3,7 +3,7 @@ import { Router } from 'express';
 import { createUser, showUserByFirstNameAndLastName } from '../../../models/user/user.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-dotenv.config();
+dotenv.config({ quiet: true });
 const authIndex = Router();
 authIndex.get('/', async (req, res) => {
     res.status(200).json({ message: 'Reached Auth Index Route' });
@@ -34,7 +34,11 @@ authIndex.post('/login', async (req, res) => {
     try {
         const user = await showUserByFirstNameAndLastName(first_name, last_name);
         if (!user) {
-            return res.status(401).json({ error: 'Invalid first name or last name or password' });
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+        const isPasswordHashValid = await bcrypt.compare(password + process.env.PEPPER, user.password_digest);
+        if (!isPasswordHashValid) {
+            return res.status(401).json({ error: 'Invalid credentials' });
         }
         const token = jwt.sign({
             id: user.id,

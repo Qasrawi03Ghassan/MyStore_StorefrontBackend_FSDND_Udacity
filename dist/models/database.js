@@ -1,6 +1,6 @@
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
-dotenv.config();
+dotenv.config({ quiet: true });
 const { SERVER, DB_ENV, DB_NAME, DB_TEST_NAME, DB_USER, DB_PASSWORD, DB_PORT } = process.env;
 let postgres; //Using let to allow reassignment based on environment variable.
 if (DB_ENV === 'test') {

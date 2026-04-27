@@ -4,7 +4,7 @@ import {createUser, showUserByFirstNameAndLastName, User} from '../../../models/
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-dotenv.config();
+dotenv.config({quiet: true});
 
 const authIndex = Router();
 
@@ -35,11 +35,18 @@ authIndex.post('/login', async (req: Request, res: Response) => {
     if(!first_name || !last_name || !password){
         return res.status(400).json({error: 'Missing required fields: first_name, last_name, and password are required'});
     }
+
     try{
         const user: User = await showUserByFirstNameAndLastName(first_name, last_name);
         if(!user){
-            return res.status(401).json({error: 'Invalid first name or last name or password'});
+            return res.status(401).json({error: 'Invalid credentials'});
         }
+
+        const isPasswordHashValid: boolean = await bcrypt.compare(password + process.env.PEPPER, user.password_digest);
+        if(!isPasswordHashValid){
+            return res.status(401).json({error: 'Invalid credentials'});
+        }
+
         const token: string = jwt.sign(
             {
                 id: user.id,

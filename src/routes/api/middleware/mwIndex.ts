@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from 'express';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config({quiet: true});
 
 export const verifyAuthToken = (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -15,7 +15,7 @@ export const verifyAuthToken = (req: Request, res: Response, next: NextFunction)
             return res.status(401).json({error: 'Invalid token format'});
         }
 
-        const decoded = jwt.verify(token, process.env.PEPPER as string);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'defaultsecretkey!23');
 
         if(decoded){
             next();
