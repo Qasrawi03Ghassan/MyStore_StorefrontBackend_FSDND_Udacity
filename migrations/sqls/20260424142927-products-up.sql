@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS products (
     id SERIAL PRIMARY KEY,
     name VARCHAR(30) NOT NULL,
-    price NUMERIC(10, 2) NOT NULL DEFAULT 0,
+    price FLOAT NOT NULL DEFAULT 0,
     category VARCHAR(50)
 );

@@ -42,7 +42,7 @@ productsRouter.get('/get-by-cat', async (req, res) => {
 productsRouter.post('/', verifyAuthToken, async (req, res) => {
     try {
         const product = await createProduct(req.body);
-        res.status(200).json({ message: "Product created successfully", product });
+        res.status(201).json({ message: "Product created successfully", product });
     }
     catch (err) { //Error type is unknown, so using any
         res.status(500).json({ error: 'Failed to create product', stack: err.stack });
