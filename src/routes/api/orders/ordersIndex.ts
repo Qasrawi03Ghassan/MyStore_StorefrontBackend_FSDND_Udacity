@@ -4,13 +4,13 @@ import { verifyAuthToken } from '../middleware/mwIndex.js';
 
 const ordersRouter = Router();
 
-ordersRouter.get('/:id', verifyAuthToken,async (req: Request,res: Response) => {
-    const user_id = Number(req.query.user_id);
-    if(!user_id || user_id === undefined || Number.isNaN(user_id)){
-        return res.status(400).json({error:"invalid parameter"})
+ordersRouter.get('/', verifyAuthToken,async (req: Request,res: Response) => {
+    const user_id = (req as any).userId; //used any to get the userId from the attached userid in the middleware
+    if(!user_id){
+        return res.status(401).json({error:"Access denied"})
     }
     try{
-        const orders: Order[] = await getCurrentOrders(user_id);
+        const orders: Order[] = await getCurrentOrders(Number(user_id));
         res.status(200).json({message: 'Active orders fetched successfully', orders});
     }catch(err: any){ //Error type is unknown, so using any
         res.status(500).json({message: 'Error fetching active orders',stack: err.stack});
@@ -18,24 +18,43 @@ ordersRouter.get('/:id', verifyAuthToken,async (req: Request,res: Response) => {
 });
 
 ordersRouter.get('/completed', verifyAuthToken,async (req: Request,res: Response) => {
-    const user_id = Number(req.query.user_id);
-    if(!user_id || user_id === undefined || Number.isNaN(user_id)){
-        return res.status(400).json({error:"invalid parameter"})
+    const user_id = (req as any).userId; //used any to get the userId from the attached userid in the middleware
+    if(!user_id){
+        return res.status(401).json({error:"Access denied"})
     }
     try{
-        const orders: Order[] = await getCompletedOrders(user_id);
+        const orders: Order[] = await getCompletedOrders(Number(user_id));
         res.status(200).json({message: 'Completed orders fetched successfully', orders});
     }catch(err: any){ //Error type is unknown, so using any
         res.status(500).json({message: 'Error fetching completed orders',stack: err.stack});
     }
 });
 
-ordersRouter.post('/', verifyAuthToken,async (req: Request,res: Response) => {
-    try{
-        const order: Order = await createOrder(req.body.user_id, req.body.status, req.body.product_id, req.body.quantity);
-        res.status(200).json({message: 'Order created successfully', order});
-    }catch(err: any){ //Error type is unknown, so using any
-        res.status(500).json({message: 'Error creating order',stack: err.stack});
+ordersRouter.post('/', verifyAuthToken, async (req: Request, res: Response) => {
+    const user_id = (req as any).userId;
+
+    if (!user_id) {
+        return res.status(401).json({ error: "Access denied" });
+    }
+
+    const products = req.body.products;
+
+    if (!Array.isArray(products) || products.length === 0) {
+        return res.status(400).json({ error: "Missing or invalid products array" });
+    }
+
+    try {
+        const order: Order = await createOrder(user_id, products);
+
+        res.status(201).json({
+            message: 'Order created successfully',
+            order
+        });
+    } catch (err: any) {
+        res.status(500).json({
+            message: 'Error creating order',
+            stack: err.stack
+        });
     }
 });
 

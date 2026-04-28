@@ -3,8 +3,6 @@ import app from '../../../server.js';
 import postgres from '../../../models/database.js';
 import { Product } from '../../../models/product/product.js';
 
-process.env.DB_ENV = 'test';
-
 const registerTestUser = async () => {
     const res = await fetch(app.address).post('/api/auth/register').send({ first_name: 'test', last_name: 'user', password: 'password' });
     expect(res.status).toBe(201);

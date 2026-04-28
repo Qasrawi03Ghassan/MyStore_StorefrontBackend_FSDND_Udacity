@@ -38,9 +38,6 @@ Although these should be kept secret in a .env file, the used variables are show
 SERVER=localhost
 PORT=8080
 
-# Use test for test DB
-DB_ENV=dev
-
 DB_USER=dbuser
 DB_PASSWORD=dbuser123
 DB_NAME=storefront_db
@@ -60,18 +57,16 @@ This project uses db-migrate for database migrations, the following scripts can 
 For development environment  
 
 ```bash
-npm run migrate:up_dev # Use for migrating on the dev environment when DB_ENV=dev
-npm run migrate:down_dev # Use for rolling back migrations on the dev environment when DB_ENV=dev
+npm run migrate:up_dev # Use for migrating on the dev environment
+npm run migrate:down_dev # Use for rolling back migrations on the test environment (Tests run on this database so this must be run before running test command)
 ```
 
 For testing environment  
 
 ```bash
-npm run migrate:up_test # Use for migrating on the dev environment when DB_ENV=test
-npm run migrate:down_test # Use for rolling back migrations on the dev environment when DB_ENV=test
+npm run migrate:up_test # Use for migrating on the dev environment
+npm run migrate:down_test # Use for rolling back migrations on the test environment
 ```
-
-#### IMPORTANT: The migrations must be used according to the `DB_ENV` environment variable, for example if `DB_ENV=test`, use test environment migrations, and if `DB_ENV=dev` then you must use development environment migrations.
 
 ### 5. Scripts
 

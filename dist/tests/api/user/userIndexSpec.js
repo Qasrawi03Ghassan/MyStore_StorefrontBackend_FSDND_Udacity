@@ -15,7 +15,6 @@ describe('Users API', () => {
     let token;
     let user;
     beforeEach(async () => {
-        process.env.DB_ENV = 'test';
         const client = await postgres.connect();
         await client.query(`
     TRUNCATE TABLE users RESTART IDENTITY CASCADE;

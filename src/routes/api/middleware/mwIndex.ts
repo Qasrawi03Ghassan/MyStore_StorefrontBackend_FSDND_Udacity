@@ -15,9 +15,9 @@ export const verifyAuthToken = (req: Request, res: Response, next: NextFunction)
             return res.status(401).json({error: 'Invalid token format'});
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'defaultsecretkey!23');
-
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'defaultsecretkey!23') as jwt.JwtPayload;
         if(decoded){
+            (req as any).userId = decoded.id; // used any to attach userId to the request from provided token
             next();
         }
         else{

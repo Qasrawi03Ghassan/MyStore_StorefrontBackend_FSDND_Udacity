@@ -21,7 +21,6 @@ describe('Users API', () => {
   let user: User;
 
 beforeEach(async () => {
-  process.env.DB_ENV = 'test';
   const client = await postgres.connect();
 
   await client.query(`

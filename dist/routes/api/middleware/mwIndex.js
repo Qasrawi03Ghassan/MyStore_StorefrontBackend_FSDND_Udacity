@@ -13,6 +13,7 @@ export const verifyAuthToken = (req, res, next) => {
         }
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'defaultsecretkey!23');
         if (decoded) {
+            req.userId = decoded.id; // used any to attach userId to the request
             next();
         }
         else {

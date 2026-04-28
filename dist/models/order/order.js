@@ -1,14 +1,53 @@
 import postgres from "../database.js";
+// export const getCurrentOrders = async (userId: number): Promise<Order[]> => {
+//     try {
+//         const conn = await postgres.connect();
+//         const sql = `
+//         SELECT 
+//             orders.*,
+//             products_orders.product_id,
+//             products_orders.quantity
+//         FROM orders
+//         JOIN products_orders 
+//             ON orders.id = products_orders.order_id
+//         WHERE orders.user_id = $1
+//             AND orders.status = 'active'
+// `;
+//         const result = await conn.query(sql, [userId]);
+//         conn.release();
+//         return result.rows;
+//     } catch (err) {
+//         throw new Error(`Could not get current order for user ${userId}. Error: ${err}`);
+//     }
+// };
 export const getCurrentOrders = async (userId) => {
     try {
         const conn = await postgres.connect();
-        const sql = "SELECT * FROM orders WHERE user_id=($1) AND status='active'";
+        const sql = `
+            SELECT 
+                o.id,
+                o.user_id,
+                o.status,
+                JSON_AGG(
+                    JSON_BUILD_OBJECT(
+                        'product_id', po.product_id,
+                        'quantity', po.quantity
+                    )
+                ) AS products
+            FROM orders o
+            JOIN products_orders po 
+                ON o.id = po.order_id
+            WHERE o.user_id = $1
+              AND o.status = 'active'
+            GROUP BY o.id
+            ORDER BY o.id;
+        `;
         const result = await conn.query(sql, [userId]);
         conn.release();
         return result.rows;
     }
     catch (err) {
-        throw new Error(`Could not get current order for user ${userId}. Error: ${err}`);
+        throw new Error(`Could not get current orders for user ${userId}. Error: ${err}`);
     }
 };
 export const getCompletedOrders = async (userId) => {
@@ -23,18 +62,48 @@ export const getCompletedOrders = async (userId) => {
         throw new Error(`Could not get completed orders for user ${userId}. Error: ${err}`);
     }
 };
-export const createOrder = async (user_id, status, product_id, quantity) => {
+/*export const createOrder = async (user_id:number, product_id: number, quantity: number): Promise<Order> => {
+    const conn = await postgres.connect();
     try {
-        const conn = await postgres.connect();
         const sql1 = "INSERT INTO orders (user_id, status) VALUES($1, 'active') RETURNING *";
         const result1 = await conn.query(sql1, [user_id]);
-        conn.release();
+        
+
         const sql2 = "INSERT INTO products_orders (product_id, order_id, quantity) VALUES($1, $2, $3)";
-        await conn.query(sql2, [product_id, result1.rows[0].id, (quantity || 1)]);
+        await conn.query(sql2, [product_id, result1.rows[0].id, (quantity||1)]);
+
         return result1.rows[0];
+    } catch (err) {
+        throw new Error(`Could not create order for user ${user_id}. Error: ${err}`);
+    }finally{
+        conn.release();
+    }
+}*/
+export const createOrder = async (user_id, products) => {
+    const conn = await postgres.connect();
+    try {
+        await conn.query('BEGIN');
+        // 1. create order
+        const orderResult = await conn.query("INSERT INTO orders (user_id, status) VALUES ($1, 'active') RETURNING *", [user_id]);
+        const order = orderResult.rows[0];
+        // 2. insert all products into join table
+        for (const item of products) {
+            await conn.query(`INSERT INTO products_orders (order_id, product_id, quantity)
+         VALUES ($1, $2, $3)`, [
+                order.id,
+                item.product_id,
+                item.quantity ?? 1
+            ]);
+        }
+        await conn.query('COMMIT');
+        return order;
     }
     catch (err) {
+        await conn.query('ROLLBACK');
         throw new Error(`Could not create order for user ${user_id}. Error: ${err}`);
+    }
+    finally {
+        conn.release();
     }
 };
 export const updateOrderStatus = async (orderId, status) => {
