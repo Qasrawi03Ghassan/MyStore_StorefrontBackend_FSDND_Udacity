@@ -66,17 +66,18 @@ afterEach(async () => {
     expect(res.status).toBe(404);
   });
 
-  it('POST /api/users should return 201 status code with the created user',async()=>{
+  it('POST /api/users should return 201 status code with the created user and token',async()=>{
     const newUser = {
       first_name:"newName",
       last_name:"User",
       password:"testPass"
     }
-    const res = await fetch(app.address).post('/api/users').set('Authorization', `Bearer ${token}`).send(newUser);
+    const res = await fetch(app.address).post('/api/users').send(newUser);
 
     expect(res.status).toBe(201);
 
     expect(res.body.user.first_name).toBe(newUser.first_name);
     expect(res.body.user.last_name).toBe(newUser.last_name);
+    expect(res.body.token).toBeDefined();
   });
 });

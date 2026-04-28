@@ -2,6 +2,7 @@ import {Router, Request, Response} from 'express';
 import {User, createUser, getUsers,showUserById} from '../../../models/user/user.js';
 import {verifyAuthToken} from '../middleware/mwIndex.js';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
 dotenv.config({quiet: true});
@@ -18,7 +19,7 @@ usersRouter.get('/', verifyAuthToken,async (req: Request,res: Response) => {
     }
 });
 
-usersRouter.post('/', verifyAuthToken,async (req: Request,res: Response) => {
+usersRouter.post('/',async (req: Request,res: Response) => {//Removed verifyAuthToken since it's not required since validating tokens is not required here as reviewer mentioned -- (notes #1)
     const {first_name, last_name, password} = req.body;
     if(!first_name || !last_name || !password){
         return res.status(400).json({error: 'Missing required fields: first_name, last_name, and password are required'});
@@ -26,7 +27,19 @@ usersRouter.post('/', verifyAuthToken,async (req: Request,res: Response) => {
     try{
         const password_digest = bcrypt.hashSync(password + process.env.PEPPER, Number.parseInt(process.env.SALT as string) || 10);
         const user: User = await createUser({first_name, last_name, password_digest});
-        res.status(201).json({"message": "User created successfully", "user":user});
+
+        //creating a token for the created user since validating tokens is not required here as reviewer mentioned -- (notes #1)
+        const createdToken: string = jwt.sign(
+            {
+                id:user.id,
+                first_name:user.first_name,
+                last_name:user.last_name
+            },
+            process.env.JWT_SECRET || 'defaultsecretkey!23',
+            {expiresIn: '1h'}
+        )
+
+        res.status(201).json({"message": "User created successfully", "user":user,"token":createdToken});
     }catch(err :any){//Error type is unknown, so using any
         res.status(500).json({error: 'Failed to create user',stack: err.stack});
     }
