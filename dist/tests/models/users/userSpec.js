@@ -21,7 +21,7 @@ const createTestUsersList = async () => {
     await createUser(newUser2);
     await createUser(newUser3);
 };
-describe('User model CRUDs', () => {
+describe('User model', () => {
     beforeEach(async () => {
         const client = await postgres.connect();
         await client.query(`

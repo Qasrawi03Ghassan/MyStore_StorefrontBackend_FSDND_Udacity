@@ -24,7 +24,7 @@ const createTestUsersList = async () =>{
         await createUser(newUser3);
 }
 
-describe('User model CRUDs', () => {
+describe('User model', () => {
 
 
     beforeEach(async () => {
@@ -79,6 +79,5 @@ describe('User model CRUDs', () => {
         expect(checkRead.first_name).toBe('Test3');
         expect(checkRead.last_name).toBe('User3');
         expect(checkRead.password_digest).toBe('pw3');
-    });
- 
+    }); 
 });
