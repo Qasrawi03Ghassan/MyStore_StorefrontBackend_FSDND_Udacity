@@ -83,10 +83,8 @@ export const createOrder = async (user_id, products) => {
     const conn = await postgres.connect();
     try {
         await conn.query('BEGIN');
-        // 1. create order
         const orderResult = await conn.query("INSERT INTO orders (user_id, status) VALUES ($1, 'active') RETURNING *", [user_id]);
         const order = orderResult.rows[0];
-        // 2. insert all products into join table
         for (const item of products) {
             await conn.query(`INSERT INTO products_orders (order_id, product_id, quantity)
          VALUES ($1, $2, $3)`, [

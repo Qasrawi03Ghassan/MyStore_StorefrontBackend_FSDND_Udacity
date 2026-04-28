@@ -22,7 +22,72 @@ const loginTestUser = async () => {
     expect(res.status).toBe(200);
     return res.body.token;
 };
-/*describe('Orders API', () => {
- 
-});*/
+const createTestOrder = async (token, products) => {
+    const newOrder = {
+        products: products.map((p) => ({
+            product_id: p.id,
+            quantity: 10
+        }))
+    };
+    const res = await fetch(app.address).post('/api/orders').set('Authorization', `Bearer ${token}`).send(newOrder);
+    expect(res.status).toBe(201);
+    return res.body.order;
+};
+const createTestProduct = async (token) => {
+    const newProduct = {
+        name: 'Test Product',
+        price: 20,
+        category: 'Test Category'
+    };
+    const res = await fetch(app.address).post('/api/products').set('Authorization', `Bearer ${token}`).send(newProduct);
+    expect(res.status).toBe(201);
+    return res.body.product;
+};
+describe('Orders API', () => {
+    let token;
+    let createdProducts = [];
+    let createdOrder;
+    beforeEach(async () => {
+        const client = await postgres.connect();
+        await client.query(`
+      TRUNCATE TABLE orders, products, users RESTART IDENTITY CASCADE;
+    `);
+        client.release();
+        await registerTestUser();
+        token = await loginTestUser();
+        for (let i = 0; i < 5; i++) {
+            createdProducts[i] = await createTestProduct(token);
+        }
+        createdOrder = await createTestOrder(token, createdProducts);
+    });
+    afterEach(async () => {
+        const client = await postgres.connect();
+        await client.query(`
+      TRUNCATE TABLE orders, products, users RESTART IDENTITY CASCADE;
+    `);
+        client.release();
+    });
+    it('GET /api/orders should return 200 status code along with active orders for the current user', async () => {
+        const res = await fetch(app.address).get('/api/orders').set('Authorization', `Bearer ${token}`);
+        expect(res.status).toBe(200);
+        expect(res.body.orders).toBeInstanceOf(Array);
+    });
+    it('GET /api/orders/completed should return 200 status code along with completed orders for the current user', async () => {
+        await fetch(app.address).put(`/api/orders/${createdOrder.id}`).set('Authorization', `Bearer ${token}`).send({ status: "completed" });
+        const res = await fetch(app.address).get('/api/orders/completed').set('Authorization', `Bearer ${token}`);
+        expect(res.status).toBe(200);
+        expect(res.body.orders).toBeInstanceOf(Array);
+        expect(res.body.orders[0].status).toBe('completed');
+    });
+    it('PUT /api/orders/:id should return 200 status code along with updated order for the current user', async () => {
+        const res = await fetch(app.address).put(`/api/orders/${createdOrder.id}`).set('Authorization', `Bearer ${token}`).send({ status: "completed" });
+        expect(res.status).toBe(200);
+        expect(res.body.message).toBe('Order status updated successfully');
+    });
+    it('DEL /api/orders:/id should return 200 status code with the deleted order for the current user', async () => {
+        const res = await fetch(app.address).delete(`/api/orders/${createdOrder.id}`).set('Authorization', `Bearer ${token}`);
+        expect(res.status).toBe(200);
+        expect(res.body.message).toBe('Order deleted successfully');
+    });
+});
 //# sourceMappingURL=orderIndexSpec.js.map
