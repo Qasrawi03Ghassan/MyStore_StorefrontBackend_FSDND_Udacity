@@ -3,29 +3,7 @@ import app from '../../../server.js';
 import postgres from '../../../models/database.js';
 import { Product } from '../../../models/product/product.js';
 
-const cleanupTestProducts = async () => {
-  const client = await postgres.connect();
-    try {
-      await client.query('DELETE FROM products WHERE name = $1', ['Test Product']);
-    } catch (err) {
-      console.error('Error cleaning up test product:', err);
-    }
-    finally {  
-        client.release();
-    }
-};
-
-const cleanUpTestUser = async () => {
-    const client = await postgres.connect();
-    try {
-      await client.query('DELETE FROM users WHERE first_name = $1 AND last_name = $2', ['test', 'user']);
-    } catch (err) {
-      console.error('Error cleaning up test user:', err);
-    }
-    finally {
-        client.release();
-    }
-};
+process.env.DB_ENV = 'test';
 
 const registerTestUser = async () => {
     const res = await fetch(app.address).post('/api/auth/register').send({ first_name: 'test', last_name: 'user', password: 'password' });
@@ -52,15 +30,28 @@ const createTestProduct = async (token: string) => {
 describe('Products API', () => {
   let token: string;
   let createdProduct: Product;
-  beforeAll(async () => {
+
+  beforeEach(async () => {
+    const client = await postgres.connect();
+    await client.query(`
+      TRUNCATE TABLE products, users RESTART IDENTITY CASCADE;
+    `);
+
+    client.release();
+
     await registerTestUser();
     token = await loginTestUser();
     createdProduct = await createTestProduct(token);
   });
 
-  afterAll(async () => {
-    await cleanupTestProducts();
-    await cleanUpTestUser();
+  afterEach(async () => {
+    const client = await postgres.connect();
+
+    await client.query(`
+      TRUNCATE TABLE products, users RESTART IDENTITY CASCADE;
+    `);
+
+    client.release();
   });
 
     it('GET /api/products should return 200 status code with a list of products',async() => {

@@ -14,8 +14,9 @@ const{
 } = process.env
 
 let postgres: Pool; //Using let to allow reassignment based on environment variable.
+const isTest = DB_ENV === 'test';
 
-if(DB_ENV === 'test'){
+if(isTest){
     postgres = new Pool({
     host: SERVER,
     database: DB_TEST_NAME,
@@ -23,7 +24,7 @@ if(DB_ENV === 'test'){
     password: DB_PASSWORD,
     port: Number(DB_PORT) || 5432
     });
-}else if(DB_ENV === 'dev'){
+}else {
     postgres = new Pool({
     host: SERVER,
     database: DB_NAME,
@@ -31,8 +32,6 @@ if(DB_ENV === 'test'){
     password: DB_PASSWORD,
     port: Number(DB_PORT) || 5432
     });
-}else{
-    throw new Error('Invalid database environment, must use "test" or "dev" only!');
 }
 
 export default postgres;

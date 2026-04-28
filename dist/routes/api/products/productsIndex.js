@@ -52,6 +52,9 @@ productsRouter.get('/:id', async (req, res) => {
     const productId = Number(req.params.id);
     try {
         const product = await showProduct(productId);
+        if (!product) {
+            return res.status(404).json({ error: `Product with id ${productId} does not exist` });
+        }
         res.status(200).json({ message: `Product ${productId} fetched successfully`, product });
     }
     catch (err) { //Error type is unknown, so using any

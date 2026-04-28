@@ -2,6 +2,8 @@ import fetch from 'supertest';
 import app from '../../../server.js';
 import postgres from '../../../models/database.js';
 
+process.env.DB_ENV = 'test';
+
 const cleanupTestUser = async () => {
   const client = await postgres.connect();
     try {
