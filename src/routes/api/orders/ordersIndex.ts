@@ -1,6 +1,7 @@
 import {Router, Request, Response} from 'express';
 import { createOrder, deleteOrder, getCompletedOrders, getCurrentOrders, Order, updateOrderStatus} from '../../../models/order/order.js';
 import { verifyAuthToken } from '../middleware/mwIndex.js';
+import { createFullOrder } from '../../../models/orderService.js';
 
 const ordersRouter = Router();
 
@@ -44,7 +45,7 @@ ordersRouter.post('/', verifyAuthToken, async (req: Request, res: Response) => {
     }
 
     try {
-        const order: Order = await createOrder(user_id, products);
+        const order: Order = await createFullOrder(user_id, products);
 
         res.status(201).json({
             message: 'Order created successfully',

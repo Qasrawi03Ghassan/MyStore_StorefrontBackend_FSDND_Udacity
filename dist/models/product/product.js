@@ -24,12 +24,20 @@ export const showProduct = async (productId) => {
     }
 };
 export const createProduct = async (product) => {
+    let sqlq = '';
+    let res;
     try {
         const conn = await postgres.connect();
-        const sqlq = "INSERT INTO products (name, price, category) VALUES($1, $2, $3) RETURNING *";
-        const result = await conn.query(sqlq, [product.name, product.price, product.category]);
+        if (!product.category || product.category === undefined || product.category === null) {
+            sqlq = "INSERT INTO products (name, price, category) VALUES($1, $2) RETURNING *";
+            res = await conn.query(sqlq, [product.name, product.price]);
+        }
+        else {
+            sqlq = "INSERT INTO products (name, price, category) VALUES($1, $2, $3) RETURNING *";
+            res = await conn.query(sqlq, [product.name, product.price, product.category]);
+        }
         conn.release();
-        return result.rows[0];
+        return res.rows[0];
     }
     catch (err) {
         throw new Error(`Couldn't create product ${product.id}: ${err}`);

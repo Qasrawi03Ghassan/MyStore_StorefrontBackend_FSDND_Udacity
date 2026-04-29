@@ -1,1 +1,1 @@
-{"version":3,"file":"ordersIndex.d.ts","sourceRoot":"","sources":["../../../../src/routes/api/orders/ordersIndex.ts"],"names":[],"mappings":"AAIA,QAAA,MAAM,YAAY,4CAAW,CAAC;AAgF9B,eAAe,YAAY,CAAC"}
+{"version":3,"file":"ordersIndex.d.ts","sourceRoot":"","sources":["../../../../src/routes/api/orders/ordersIndex.ts"],"names":[],"mappings":"AAKA,QAAA,MAAM,YAAY,4CAAW,CAAC;AAgF9B,eAAe,YAAY,CAAC"}

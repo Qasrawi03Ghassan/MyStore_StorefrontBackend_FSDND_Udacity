@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { createOrder, deleteOrder, getCompletedOrders, getCurrentOrders, updateOrderStatus } from '../../../models/order/order.js';
+import { deleteOrder, getCompletedOrders, getCurrentOrders, updateOrderStatus } from '../../../models/order/order.js';
 import { verifyAuthToken } from '../middleware/mwIndex.js';
+import { createFullOrder } from '../../../models/orderService.js';
 const ordersRouter = Router();
 ordersRouter.get('/', verifyAuthToken, async (req, res) => {
     const user_id = req.userId;
@@ -38,7 +39,7 @@ ordersRouter.post('/', verifyAuthToken, async (req, res) => {
         return res.status(400).json({ error: "Missing or invalid products array" });
     }
     try {
-        const order = await createOrder(user_id, products);
+        const order = await createFullOrder(user_id, products);
         res.status(201).json({
             message: 'Order created successfully',
             order

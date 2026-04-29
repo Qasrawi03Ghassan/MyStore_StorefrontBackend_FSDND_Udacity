@@ -1,8 +1,8 @@
 import postgres from "../database.js";
 
 export type Order   = {
-    id?: number,
-    user_id?: number,
+    id: number,
+    user_id: number,
     status: string
 };
 
@@ -54,7 +54,6 @@ export const getCompletedOrders = async (userId: number): Promise<Order[]> => {
 
 export const createOrder = async (
   user_id: number,
-  products: { product_id: number; quantity: number }[]
 ): Promise<Order> => {
   const conn = await postgres.connect();
 
@@ -66,23 +65,9 @@ export const createOrder = async (
       [user_id]
     );
 
-    const order = orderResult.rows[0];
-
-    for (const item of products) {
-      await conn.query(
-        `INSERT INTO products_orders (order_id, product_id, quantity)
-         VALUES ($1, $2, $3)`,
-        [
-          order.id,
-          item.product_id,
-          item.quantity ?? 1
-        ]
-      );
-    }
-
     await conn.query('COMMIT');
 
-    return order;
+    return orderResult.rows[0];
   } catch (err) {
     await conn.query('ROLLBACK');
     throw new Error(`Could not create order for user ${user_id}. Error: ${err}`);

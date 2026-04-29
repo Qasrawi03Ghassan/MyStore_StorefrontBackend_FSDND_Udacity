@@ -3,8 +3,9 @@ import {Product, createProduct} from '../../../models/product/product.js'
 import { Order,getCurrentOrders, getCompletedOrders, createOrder, deleteOrder, updateOrderStatus} from '../../../models/order/order.js';
 import { User,createUser } from '../../../models/user/user.js';
 import { PoolClient } from 'pg';
+import { createFullOrder } from '../../../models/orderService.js';
 
-const createTestUser = async () => {
+export const createTestUser = async () => {
     const newUser1: User={
             first_name:"Test1",
             last_name:"User1",
@@ -14,7 +15,7 @@ const createTestUser = async () => {
     return user;
 }
 
-const createTestProductsList = async () : Promise<{product_id:number,quantity:number}[]>=> {
+export const createTestProductsList = async () : Promise<{product_id:number,quantity:number}[]>=> {
     const newProduct1: Product={
             name:"p1",
             price:10,
@@ -61,7 +62,7 @@ describe('Orders model', () => {
         const user = await createTestUser();
         const prods = await createTestProductsList();
 
-        const checkCreation: Order = await createOrder(Number(user.id),prods);
+        const checkCreation: Order = await createOrder(Number(user.id));
         
         expect(checkCreation).toBeDefined();
         expect(checkCreation.user_id).toBe(1);
@@ -73,7 +74,7 @@ describe('Orders model', () => {
         const prods = await createTestProductsList();
         const user = await createTestUser();
 
-        await createOrder(Number(user.id),prods);
+        await createFullOrder(Number(user.id),prods);
 
         const checkRead: Order[] = await getCurrentOrders(Number(user.id));
         expect(checkRead).toBeInstanceOf(Array);
@@ -85,7 +86,7 @@ describe('Orders model', () => {
         const prods = await createTestProductsList();
         const user = await createTestUser();
 
-        const checkCreation: Order = await createOrder(Number(user.id),prods);
+        const checkCreation: Order = await createFullOrder(Number(user.id),prods);
         
         await updateOrderStatus(Number(checkCreation.id),'completed');
 
@@ -99,7 +100,7 @@ describe('Orders model', () => {
         const prods = await createTestProductsList();
         const user = await createTestUser();
 
-        await createOrder(Number(user.id),prods);
+        await createFullOrder(Number(user.id),prods);
         const checkRead = await updateOrderStatus(1,'completed');
 
         expect(checkRead.id).toBe(1);
@@ -110,7 +111,7 @@ describe('Orders model', () => {
     it('Delete an order by id', async ()=>{
         const prods = await createTestProductsList();
         const user = await createTestUser();
-        await createOrder(Number(user.id),prods);
+        await createFullOrder(Number(user.id),prods);
 
         const checkRead = await deleteOrder(1);
 

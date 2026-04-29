@@ -41,22 +41,13 @@ export const getCompletedOrders = async (userId) => {
         throw new Error(`Could not get completed orders for user ${userId}. Error: ${err}`);
     }
 };
-export const createOrder = async (user_id, products) => {
+export const createOrder = async (user_id) => {
     const conn = await postgres.connect();
     try {
         await conn.query('BEGIN');
         const orderResult = await conn.query("INSERT INTO orders (user_id, status) VALUES ($1, 'active') RETURNING *", [user_id]);
-        const order = orderResult.rows[0];
-        for (const item of products) {
-            await conn.query(`INSERT INTO products_orders (order_id, product_id, quantity)
-         VALUES ($1, $2, $3)`, [
-                order.id,
-                item.product_id,
-                item.quantity ?? 1
-            ]);
-        }
         await conn.query('COMMIT');
-        return order;
+        return orderResult.rows[0];
     }
     catch (err) {
         await conn.query('ROLLBACK');
