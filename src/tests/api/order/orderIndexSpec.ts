@@ -3,6 +3,7 @@ import app from '../../../server.js';
 import postgres from '../../../models/database.js';
 import { Order } from '../../../models/order/order.js';
 import { Product } from '../../../models/product/product.js';
+import { PoolClient } from 'pg';
 
 const registerTestUser = async () => {
     const res = await fetch(app.address).post('/api/auth/register').send({ first_name: 'test', last_name: 'user', password: 'password' });
@@ -46,13 +47,15 @@ describe('Orders API', () => {
   let createdProducts: Product[] = [];
   let createdOrder: Order;
 
-  beforeEach(async () => {
-    const client = await postgres.connect();
+  let client:PoolClient;
+
+  beforeAll(async () => {
+    client = await postgres.connect();
     await client.query(`
       TRUNCATE TABLE orders, products, users RESTART IDENTITY CASCADE;
     `);
 
-    client.release();
+    //client.release();
 
     await registerTestUser();
     token = await loginTestUser();
@@ -64,8 +67,8 @@ describe('Orders API', () => {
     createdOrder = await createTestOrder(token,createdProducts);
   });
 
-  afterEach(async () => {
-    const client = await postgres.connect();
+  afterAll(async () => {
+    //const client = await postgres.connect();
 
     await client.query(`
       TRUNCATE TABLE orders, products, users RESTART IDENTITY CASCADE;

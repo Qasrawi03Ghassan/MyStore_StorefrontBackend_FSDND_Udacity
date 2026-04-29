@@ -14,12 +14,12 @@ usersRouter.get('/', verifyAuthToken,async (req: Request,res: Response) => {
     try{
         const users: User[] = await getUsers();
         res.status(200).json({"message": "Users fetched successfully", "users": users});
-    }catch(err :any){//Error type is unknown, so using any
-        res.status(500).json({error: 'Failed to fetch users',stack: err.stack});
+    }catch(err :unknown){
+        res.status(500).json({error: 'Failed to fetch users',stack: (err as Error).stack});
     }
 });
 
-usersRouter.post('/',async (req: Request,res: Response) => {//Removed verifyAuthToken since it's not required since validating tokens is not required here as reviewer mentioned -- (notes #1)
+usersRouter.post('/',async (req: Request,res: Response) => {
     const {first_name, last_name, password} = req.body;
     if(!first_name || !last_name || !password){
         return res.status(400).json({error: 'Missing required fields: first_name, last_name, and password are required'});
@@ -28,7 +28,6 @@ usersRouter.post('/',async (req: Request,res: Response) => {//Removed verifyAuth
         const password_digest = bcrypt.hashSync(password + process.env.PEPPER, Number.parseInt(process.env.SALT as string) || 10);
         const user: User = await createUser({first_name, last_name, password_digest});
 
-        //creating a token for the created user since validating tokens is not required here as reviewer mentioned -- (notes #1)
         const createdToken: string = jwt.sign(
             {
                 id:user.id,
@@ -40,8 +39,8 @@ usersRouter.post('/',async (req: Request,res: Response) => {//Removed verifyAuth
         )
 
         res.status(201).json({"message": "User created successfully", "user":user,"token":createdToken});
-    }catch(err :any){//Error type is unknown, so using any
-        res.status(500).json({error: 'Failed to create user',stack: err.stack});
+    }catch(err :unknown){
+        res.status(500).json({error: 'Failed to create user',stack: (err as Error).stack});
     }
 });
 
@@ -57,8 +56,8 @@ usersRouter.get('/:id', verifyAuthToken,async (req: Request,res: Response) => {
             return res.status(404).json({error:`User with id ${userId} does not exist`});
         }
         res.status(200).json({"message": "User fetched successfully", "user":user});
-    }catch(err :any){//Error type is unknown, so using any
-        res.status(500).json({error: 'Failed to fetch user',stack: err.stack});
+    }catch(err :unknown){
+        res.status(500).json({error: 'Failed to fetch user',stack: (err as Error).stack});
     }
 });
 

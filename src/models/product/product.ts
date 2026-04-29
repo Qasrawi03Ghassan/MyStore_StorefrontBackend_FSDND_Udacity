@@ -78,15 +78,18 @@ export const updateProduct = async (product: Product): Promise<Product> => {
     try {
         const conn = await postgres.connect();
         let sqlq='';
+        let res;
         if(product.category === null || product.category === undefined){
             sqlq = "UPDATE products SET name=($1), price=($2) WHERE id=($3) RETURNING *";
+            res = await conn.query(sqlq, [product.name, product.price, product.id]);
         }else{
             sqlq = "UPDATE products SET name=($1), price=($2), category=($3) WHERE id=($4) RETURNING *";
+            res = await conn.query(sqlq, [product.name, product.price, product.category, product.id]);
         }
-        const result = await conn.query(sqlq, [product.name, product.price, product.category, product.id]);
+        
         conn.release();
 
-        return result.rows[0];
+        return res.rows[0];
     }catch(err){
         throw new Error(`Couldn't update product ${product.id}: ${err}`);
     }

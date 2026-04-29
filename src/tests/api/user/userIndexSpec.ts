@@ -2,6 +2,7 @@ import fetch from 'supertest';
 import app from '../../../server.js';
 import postgres from '../../../models/database.js';
 import { User } from '../../../models/user/user.js';
+import { PoolClient } from 'pg';
 
 const registerTestUser = async () => {
     const res = await fetch(app.address).post('/api/auth/register').send({ first_name: 'test', last_name: 'user', password: 'password' });
@@ -19,22 +20,23 @@ describe('Users API', () => {
 
   let token: string;
   let user: User;
+  let client:PoolClient;
 
-beforeEach(async () => {
-  const client = await postgres.connect();
+beforeAll(async () => {
+  client = await postgres.connect();
 
   await client.query(`
     TRUNCATE TABLE users RESTART IDENTITY CASCADE;
   `);
 
-  client.release();
+  //client.release();
 
   user = await registerTestUser();
   token = await loginTestUser();
 });
 
-afterEach(async () => {
-  const client = await postgres.connect();
+afterAll(async () => {
+  //const client = await postgres.connect();
 
   await client.query(`
     TRUNCATE TABLE users RESTART IDENTITY CASCADE;

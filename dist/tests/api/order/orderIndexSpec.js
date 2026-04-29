@@ -35,12 +35,13 @@ describe('Orders API', () => {
     let token;
     let createdProducts = [];
     let createdOrder;
-    beforeEach(async () => {
-        const client = await postgres.connect();
+    let client;
+    beforeAll(async () => {
+        client = await postgres.connect();
         await client.query(`
       TRUNCATE TABLE orders, products, users RESTART IDENTITY CASCADE;
     `);
-        client.release();
+        //client.release();
         await registerTestUser();
         token = await loginTestUser();
         for (let i = 0; i < 5; i++) {
@@ -48,8 +49,8 @@ describe('Orders API', () => {
         }
         createdOrder = await createTestOrder(token, createdProducts);
     });
-    afterEach(async () => {
-        const client = await postgres.connect();
+    afterAll(async () => {
+        //const client = await postgres.connect();
         await client.query(`
       TRUNCATE TABLE orders, products, users RESTART IDENTITY CASCADE;
     `);

@@ -21,15 +21,16 @@ const createTestProductsList = async () => {
     await createProduct(newProduct3);
 };
 describe('Product model', () => {
-    beforeEach(async () => {
-        const client = await postgres.connect();
+    let client;
+    beforeAll(async () => {
+        client = await postgres.connect();
         await client.query(`
         TRUNCATE TABLE products RESTART IDENTITY CASCADE;
     `);
-        client.release();
+        //client.release();
     });
-    afterEach(async () => {
-        const client = await postgres.connect();
+    afterAll(async () => {
+        //const client = await postgres.connect();
         await client.query(`
         TRUNCATE TABLE products RESTART IDENTITY CASCADE;
     `);
@@ -52,17 +53,17 @@ describe('Product model', () => {
         await createTestProductsList();
         const checkRead = await getProducts();
         expect(checkRead).toBeInstanceOf(Array);
-        expect(checkRead[1]?.name).toBe('p2');
-        expect(checkRead[1]?.price).toBe(20);
-        expect(checkRead[1]?.category).toBe('cat2');
+        expect(checkRead[1]?.name).toBe('p1');
+        expect(checkRead[1]?.price).toBe(10);
+        expect(checkRead[1]?.category).toBe('cat1');
     });
     it('Read a product by id', async () => {
         await createTestProductsList();
         const checkRead = await showProduct(3);
         expect(checkRead.id).toBe(3);
-        expect(checkRead.name).toBe('p3');
-        expect(checkRead.price).toEqual(30);
-        expect(checkRead.category).toBe('cat3');
+        expect(checkRead.name).toBe('p2');
+        expect(checkRead.price).toEqual(20);
+        expect(checkRead.category).toBe('cat2');
     });
     it('Update a product by id', async () => {
         await createTestProductsList();
@@ -80,8 +81,8 @@ describe('Product model', () => {
     });
     it('Delete a product by id', async () => {
         await createTestProductsList();
-        const checkRead = await deleteProduct(2);
-        expect(checkRead.id).toBe(2);
+        const checkRead = await deleteProduct(3);
+        expect(checkRead.id).toBe(3);
         expect(checkRead.name).toBe('p2');
         expect(checkRead.price).toEqual(20);
         expect(checkRead.category).toBe('cat2');

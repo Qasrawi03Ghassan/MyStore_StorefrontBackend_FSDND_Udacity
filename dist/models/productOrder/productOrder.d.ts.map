@@ -1,0 +1,1 @@
+{"version":3,"file":"productOrder.d.ts","sourceRoot":"","sources":["../../../src/models/productOrder/productOrder.ts"],"names":[],"mappings":"AAEA,MAAM,MAAM,YAAY,GAAG;IACvB,UAAU,CAAC,EAAE,MAAM,CAAC;IACpB,QAAQ,CAAC,EAAE,MAAM,CAAC;IAClB,QAAQ,EAAE,MAAM,CAAA;CACnB,CAAC;AAEF,eAAO,MAAM,iBAAiB,sBAY7B,CAAC"}

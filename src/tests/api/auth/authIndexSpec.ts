@@ -1,17 +1,19 @@
 import fetch from 'supertest';
 import app from '../../../server.js';
 import postgres from '../../../models/database.js';
+import {  PoolClient } from 'pg';
 
 describe('Auth API', () => {
-  beforeEach(async () => {
+  let client:PoolClient;
+  beforeAll(async () => {
     process.env.DB_ENV='test';
-    const client = await postgres.connect();
+    client = await postgres.connect();
 
     await client.query(`
       TRUNCATE TABLE users RESTART IDENTITY CASCADE;
     `);
 
-    client.release();
+    //client.release();
 
     await fetch(app.address).post('/api/auth/register').send({
       first_name: 'test',
@@ -20,8 +22,8 @@ describe('Auth API', () => {
     });
   });
 
-  afterEach(async () => {
-    const client = await postgres.connect();
+  afterAll(async () => {
+    //const client = await postgres.connect();
 
     await client.query(`
       TRUNCATE TABLE users RESTART IDENTITY CASCADE;

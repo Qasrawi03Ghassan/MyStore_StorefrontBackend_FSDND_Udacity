@@ -23,18 +23,19 @@ const createTestProduct = async (token) => {
 describe('Products API', () => {
     let token;
     let createdProduct;
-    beforeEach(async () => {
-        const client = await postgres.connect();
+    let client;
+    beforeAll(async () => {
+        client = await postgres.connect();
         await client.query(`
       TRUNCATE TABLE products, users RESTART IDENTITY CASCADE;
     `);
-        client.release();
+        //client.release();
         await registerTestUser();
         token = await loginTestUser();
         createdProduct = await createTestProduct(token);
     });
-    afterEach(async () => {
-        const client = await postgres.connect();
+    afterAll(async () => {
+        //const client = await postgres.connect();
         await client.query(`
       TRUNCATE TABLE products, users RESTART IDENTITY CASCADE;
     `);
@@ -87,11 +88,21 @@ describe('Products API', () => {
             expect(product.category).toBe(createdProduct.category);
         }
     });
-    it('PUT /api/products/:id should return 200 status code and change requested product && DEL /api/products/:id should return 200 status code and deleted product', async () => {
+    it('PUT /api/products/:id should return 200 status code and change requested product', async () => {
         const updatedProduct = {
             name: "updated Test Product",
             price: 99,
             category: "updatedCat"
+        };
+        const res = await fetch(app.address).put(`/api/products/${createdProduct.id}`).set('Authorization', `Bearer ${token}`).send(updatedProduct);
+        expect(res.status).toBe(200);
+        expect(res.body.product.id).toBe(createdProduct.id);
+        expect(res.body.product.name).toBe('updated Test Product');
+    });
+    it('PUT /api/products/:id should return 200 status code and change requested product when no category is provided && DEL /api/products/:id should return 200 status code and deleted product', async () => {
+        const updatedProduct = {
+            name: "updated Test Product",
+            price: 99,
         };
         const res = await fetch(app.address).put(`/api/products/${createdProduct.id}`).set('Authorization', `Bearer ${token}`).send(updatedProduct);
         expect(res.status).toBe(200);

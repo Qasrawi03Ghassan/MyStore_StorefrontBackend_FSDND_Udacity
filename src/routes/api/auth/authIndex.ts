@@ -22,7 +22,7 @@ authRouter.post('/register', async (req: Request, res: Response) => {
         if(existingUser){
             return res.status(409).json({error: 'User with the same first name and last name already exists'});
         }
-        const passwordHash: string = await bcrypt.hash(password + process.env.PEPPER, Number.parseInt(process.env.SALT_ROUNDS || '10'));
+        const passwordHash: string = await bcrypt.hash(password + process.env.PEPPER, Number.parseInt(process.env.SALT || '10'));
         const newUser: User = await createUser({first_name, last_name, password_digest: passwordHash});
         res.status(201).json({message: 'User registered successfully', user: newUser});
     }catch{

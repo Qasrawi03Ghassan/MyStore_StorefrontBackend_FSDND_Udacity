@@ -6,29 +6,6 @@ export type Order   = {
     status: string
 };
 
-// export const getCurrentOrders = async (userId: number): Promise<Order[]> => {
-//     try {
-//         const conn = await postgres.connect();
-//         const sql = `
-//         SELECT 
-//             orders.*,
-//             products_orders.product_id,
-//             products_orders.quantity
-//         FROM orders
-//         JOIN products_orders 
-//             ON orders.id = products_orders.order_id
-//         WHERE orders.user_id = $1
-//             AND orders.status = 'active'
-// `;
-//         const result = await conn.query(sql, [userId]);
-//         conn.release();
-
-//         return result.rows;
-//     } catch (err) {
-//         throw new Error(`Could not get current order for user ${userId}. Error: ${err}`);
-//     }
-// };
-
 export const getCurrentOrders = async (userId: number): Promise<Order[]> => {
     try {
         const conn = await postgres.connect();
@@ -74,24 +51,6 @@ export const getCompletedOrders = async (userId: number): Promise<Order[]> => {
         throw new Error(`Could not get completed orders for user ${userId}. Error: ${err}`);
     }
 };
-
-/*export const createOrder = async (user_id:number, product_id: number, quantity: number): Promise<Order> => {
-    const conn = await postgres.connect();
-    try {
-        const sql1 = "INSERT INTO orders (user_id, status) VALUES($1, 'active') RETURNING *";
-        const result1 = await conn.query(sql1, [user_id]);
-        
-
-        const sql2 = "INSERT INTO products_orders (product_id, order_id, quantity) VALUES($1, $2, $3)";
-        await conn.query(sql2, [product_id, result1.rows[0].id, (quantity||1)]);
-
-        return result1.rows[0];
-    } catch (err) {
-        throw new Error(`Could not create order for user ${user_id}. Error: ${err}`);
-    }finally{
-        conn.release();
-    }
-}*/
 
 export const createOrder = async (
   user_id: number,

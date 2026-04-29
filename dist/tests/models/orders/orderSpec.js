@@ -33,15 +33,16 @@ const createTestProductsList = async () => {
     return [{ product_id: p1.id, quantity: 10 }, { product_id: p2.id, quantity: 10 }, { product_id: p3.id, quantity: 10 }];
 };
 describe('Orders model', () => {
-    beforeEach(async () => {
-        const client = await postgres.connect();
+    let client;
+    beforeAll(async () => {
+        client = await postgres.connect();
         await client.query(`
         TRUNCATE TABLE users,products,orders RESTART IDENTITY CASCADE;
     `);
-        client.release();
+        //client.release();
     });
-    afterEach(async () => {
-        const client = await postgres.connect();
+    afterAll(async () => {
+        //const client = await postgres.connect();
         await client.query(`
         TRUNCATE TABLE users,products,orders RESTART IDENTITY CASCADE;
     `);

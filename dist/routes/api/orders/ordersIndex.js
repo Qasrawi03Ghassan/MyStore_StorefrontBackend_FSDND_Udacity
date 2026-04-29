@@ -3,7 +3,7 @@ import { createOrder, deleteOrder, getCompletedOrders, getCurrentOrders, updateO
 import { verifyAuthToken } from '../middleware/mwIndex.js';
 const ordersRouter = Router();
 ordersRouter.get('/', verifyAuthToken, async (req, res) => {
-    const user_id = req.userId; //used any to get the userId from the attached userid in the middleware
+    const user_id = req.userId;
     if (!user_id) {
         return res.status(401).json({ error: "Access denied" });
     }
@@ -11,12 +11,12 @@ ordersRouter.get('/', verifyAuthToken, async (req, res) => {
         const orders = await getCurrentOrders(Number(user_id));
         res.status(200).json({ message: 'Active orders fetched successfully', orders });
     }
-    catch (err) { //Error type is unknown, so using any
+    catch (err) {
         res.status(500).json({ message: 'Error fetching active orders', stack: err.stack });
     }
 });
 ordersRouter.get('/completed', verifyAuthToken, async (req, res) => {
-    const user_id = req.userId; //used any to get the userId from the attached userid in the middleware
+    const user_id = req.userId;
     if (!user_id) {
         return res.status(401).json({ error: "Access denied" });
     }
@@ -24,7 +24,7 @@ ordersRouter.get('/completed', verifyAuthToken, async (req, res) => {
         const orders = await getCompletedOrders(Number(user_id));
         res.status(200).json({ message: 'Completed orders fetched successfully', orders });
     }
-    catch (err) { //Error type is unknown, so using any
+    catch (err) {
         res.status(500).json({ message: 'Error fetching completed orders', stack: err.stack });
     }
 });
@@ -61,7 +61,7 @@ ordersRouter.put('/:id', verifyAuthToken, async (req, res) => {
         const order = await updateOrderStatus(orderId, status);
         res.status(200).json({ message: 'Order status updated successfully', order });
     }
-    catch (err) { //Error type is unknown, so using any
+    catch (err) {
         res.status(500).json({ message: 'Error updating order status', stack: err.stack });
     }
 });
@@ -71,7 +71,7 @@ ordersRouter.delete('/:id', verifyAuthToken, async (req, res) => {
         const order = await deleteOrder(orderId);
         res.status(200).json({ message: 'Order deleted successfully', order });
     }
-    catch (err) { //Error type is unknown, so using any
+    catch (err) {
         res.status(500).json({ message: 'Error deleting order', stack: err.stack });
     }
 });

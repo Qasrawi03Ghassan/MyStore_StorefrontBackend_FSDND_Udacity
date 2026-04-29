@@ -14,17 +14,18 @@ const loginTestUser = async () => {
 describe('Users API', () => {
     let token;
     let user;
-    beforeEach(async () => {
-        const client = await postgres.connect();
+    let client;
+    beforeAll(async () => {
+        client = await postgres.connect();
         await client.query(`
     TRUNCATE TABLE users RESTART IDENTITY CASCADE;
   `);
-        client.release();
+        //client.release();
         user = await registerTestUser();
         token = await loginTestUser();
     });
-    afterEach(async () => {
-        const client = await postgres.connect();
+    afterAll(async () => {
+        //const client = await postgres.connect();
         await client.query(`
     TRUNCATE TABLE users RESTART IDENTITY CASCADE;
   `);

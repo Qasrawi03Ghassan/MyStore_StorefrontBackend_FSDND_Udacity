@@ -7,7 +7,7 @@ productsRouter.get('/', async (req, res) => {
         const products = await getProducts();
         res.status(200).json({ message: 'Products fetched successfully', products });
     }
-    catch (err) { //Error type is unknown, so using any
+    catch (err) {
         res.status(500).json({ error: 'Failed to fetch products', stack: err.stack });
     }
 });
@@ -16,7 +16,7 @@ productsRouter.get('/most-popular', async (req, res) => {
         const products = await getTop5MostPopularProducts();
         res.status(200).json({ message: 'Most popular products fetched successfully', products });
     }
-    catch (err) { //Error type is unknown, so using any
+    catch (err) {
         res.status(500).json({ error: 'Failed to fetch most popular products', stack: err.stack });
     }
 });
@@ -35,7 +35,7 @@ productsRouter.get('/get-by-cat', async (req, res) => {
         const products = await getProductsByCategory(productCategory);
         res.status(200).json({ message: 'Products fetched by category successfully', products });
     }
-    catch (err) { //Error type is unknown, so using any
+    catch (err) {
         res.status(500).json({ error: 'Failed to fetch products by category', stack: err.stack });
     }
 });
@@ -44,7 +44,7 @@ productsRouter.post('/', verifyAuthToken, async (req, res) => {
         const product = await createProduct(req.body);
         res.status(201).json({ message: "Product created successfully", product });
     }
-    catch (err) { //Error type is unknown, so using any
+    catch (err) {
         res.status(500).json({ error: 'Failed to create product', stack: err.stack });
     }
 });
@@ -57,7 +57,7 @@ productsRouter.get('/:id', async (req, res) => {
         }
         res.status(200).json({ message: `Product ${productId} fetched successfully`, product });
     }
-    catch (err) { //Error type is unknown, so using any
+    catch (err) {
         res.status(500).json({ error: `Failed to fetch product ${productId}`, stack: err.stack });
     }
 });
@@ -75,7 +75,7 @@ productsRouter.put('/:id', verifyAuthToken, async (req, res) => {
         const updatedProduct = await updateProduct({ id, name, price, category });
         res.status(200).json({ message: `Product ${id} updated successfully`, product: updatedProduct });
     }
-    catch (err) { //Error type is unknown, so using any
+    catch (err) {
         res.status(500).json({ error: `Failed to update product ${id}`, stack: err.stack });
     }
 });
@@ -89,7 +89,7 @@ productsRouter.delete('/:id', verifyAuthToken, async (req, res) => {
         const deletedProduct = await deleteProduct(productId);
         res.status(200).json({ message: `Product ${productId} deleted successfully`, product: deletedProduct });
     }
-    catch (err) { //Error type is unknown, so using any
+    catch (err) {
         res.status(500).json({ error: `Failed to delete product ${productId}`, stack: err.stack });
     }
 });

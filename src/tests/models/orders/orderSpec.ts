@@ -2,6 +2,7 @@ import postgres from '../../../models/database.js';
 import {Product, createProduct} from '../../../models/product/product.js'
 import { Order,getCurrentOrders, getCompletedOrders, createOrder, deleteOrder, updateOrderStatus} from '../../../models/order/order.js';
 import { User,createUser } from '../../../models/user/user.js';
+import { PoolClient } from 'pg';
 
 const createTestUser = async () => {
     const newUser1: User={
@@ -39,17 +40,17 @@ const createTestProductsList = async () : Promise<{product_id:number,quantity:nu
 
 describe('Orders model', () => {
 
-
-    beforeEach(async () => {
-    const client = await postgres.connect();
+    let client:PoolClient;
+    beforeAll(async () => {
+    client = await postgres.connect();
     await client.query(`
         TRUNCATE TABLE users,products,orders RESTART IDENTITY CASCADE;
     `);
-    client.release();
+    //client.release();
     });
 
-    afterEach(async () => {
-    const client = await postgres.connect();
+    afterAll(async () => {
+    //const client = await postgres.connect();
     await client.query(`
         TRUNCATE TABLE users,products,orders RESTART IDENTITY CASCADE;
     `);

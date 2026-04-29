@@ -2,21 +2,22 @@ import fetch from 'supertest';
 import app from '../../../server.js';
 import postgres from '../../../models/database.js';
 describe('Auth API', () => {
-    beforeEach(async () => {
+    let client;
+    beforeAll(async () => {
         process.env.DB_ENV = 'test';
-        const client = await postgres.connect();
+        client = await postgres.connect();
         await client.query(`
       TRUNCATE TABLE users RESTART IDENTITY CASCADE;
     `);
-        client.release();
+        //client.release();
         await fetch(app.address).post('/api/auth/register').send({
             first_name: 'test',
             last_name: 'user',
             password: 'testpassword123'
         });
     });
-    afterEach(async () => {
-        const client = await postgres.connect();
+    afterAll(async () => {
+        //const client = await postgres.connect();
         await client.query(`
       TRUNCATE TABLE users RESTART IDENTITY CASCADE;
     `);

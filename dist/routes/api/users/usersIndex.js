@@ -11,7 +11,7 @@ usersRouter.get('/', verifyAuthToken, async (req, res) => {
         const users = await getUsers();
         res.status(200).json({ "message": "Users fetched successfully", "users": users });
     }
-    catch (err) { //Error type is unknown, so using any
+    catch (err) {
         res.status(500).json({ error: 'Failed to fetch users', stack: err.stack });
     }
 });
@@ -23,7 +23,6 @@ usersRouter.post('/', async (req, res) => {
     try {
         const password_digest = bcrypt.hashSync(password + process.env.PEPPER, Number.parseInt(process.env.SALT) || 10);
         const user = await createUser({ first_name, last_name, password_digest });
-        //creating a token for the created user since validating tokens is not required here as reviewer mentioned -- (notes #1)
         const createdToken = jwt.sign({
             id: user.id,
             first_name: user.first_name,
@@ -31,7 +30,7 @@ usersRouter.post('/', async (req, res) => {
         }, process.env.JWT_SECRET || 'defaultsecretkey!23', { expiresIn: '1h' });
         res.status(201).json({ "message": "User created successfully", "user": user, "token": createdToken });
     }
-    catch (err) { //Error type is unknown, so using any
+    catch (err) {
         res.status(500).json({ error: 'Failed to create user', stack: err.stack });
     }
 });
@@ -48,7 +47,7 @@ usersRouter.get('/:id', verifyAuthToken, async (req, res) => {
         }
         res.status(200).json({ "message": "User fetched successfully", "user": user });
     }
-    catch (err) { //Error type is unknown, so using any
+    catch (err) {
         res.status(500).json({ error: 'Failed to fetch user', stack: err.stack });
     }
 });
