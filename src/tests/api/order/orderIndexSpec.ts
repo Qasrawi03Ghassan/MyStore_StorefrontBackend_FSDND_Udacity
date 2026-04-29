@@ -16,10 +16,10 @@ const loginTestUser = async () => {
     return res.body.token;
 };
 
-const createTestOrder = async (token: string,products: any[]) => {//Used any here to pass list of products in order to extract product_id nad quantity for each one
+const createTestOrder = async (token: string,products: {product_id: number,quantity: number}[]) => {//Used any here to pass list of products in order to extract product_id nad quantity for each one
     const newOrder = {
       products: products.map((p) => ({
-      product_id: p.id,
+      product_id: p.product_id,
       quantity: 10
     }))
   };

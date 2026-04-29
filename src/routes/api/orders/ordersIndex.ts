@@ -5,7 +5,7 @@ import { verifyAuthToken } from '../middleware/mwIndex.js';
 const ordersRouter = Router();
 
 ordersRouter.get('/', verifyAuthToken,async (req: Request,res: Response) => {
-    const user_id = (req as any).userId;
+    const user_id = req.userId;
     if(!user_id){
         return res.status(401).json({error:"Access denied"})
     }
@@ -18,7 +18,7 @@ ordersRouter.get('/', verifyAuthToken,async (req: Request,res: Response) => {
 });
 
 ordersRouter.get('/completed', verifyAuthToken,async (req: Request,res: Response) => {
-    const user_id = (req as any).userId;
+    const user_id = req.userId;
     if(!user_id){
         return res.status(401).json({error:"Access denied"})
     }
@@ -31,7 +31,7 @@ ordersRouter.get('/completed', verifyAuthToken,async (req: Request,res: Response
 });
 
 ordersRouter.post('/', verifyAuthToken, async (req: Request, res: Response) => {
-    const user_id = (req as any).userId;
+    const user_id = req.userId;
 
     if (!user_id) {
         return res.status(401).json({ error: "Access denied" });
