@@ -10,13 +10,13 @@ const registerTestUser = async () => {
     expect(res.status).toBe(201);
 };
 
-const loginTestUser = async () => {
+const loginTestUser = async () : Promise<string>=> {
     const res = await fetch(app.address).post('/api/auth/login').send({ first_name: 'test', last_name: 'user', password: 'password' });
     expect(res.status).toBe(200);
     return res.body.token;
 };
 
-const createTestOrder = async (token: string,products: {product_id: number,quantity: number}[]) => {//Used any here to pass list of products in order to extract product_id nad quantity for each one
+const createTestOrder = async (token: string,products: {product_id: number, quantity: number}[]) : Promise<Order>  => {
     const newOrder = {
       products: products.map((p) => ({
       product_id: p.product_id,
@@ -29,7 +29,7 @@ const createTestOrder = async (token: string,products: {product_id: number,quant
     return res.body.order;
 };
 
-const createTestProduct = async (token: string) => {
+const createTestProduct = async (token: string) : Promise<Product> => {
     const newProduct = {
         name: 'Test Product',
         price: 20,
@@ -44,7 +44,6 @@ const createTestProduct = async (token: string) => {
 describe('Orders API', () => {
 
   let token: string;
-  let createdProducts: Product[] = [];
   let createdOrder: Order;
 
   let client:PoolClient;
@@ -55,20 +54,28 @@ describe('Orders API', () => {
       TRUNCATE TABLE orders, products, users RESTART IDENTITY CASCADE;
     `);
 
-    //client.release();
-
     await registerTestUser();
     token = await loginTestUser();
 
+    let s = 10;
+    let orderItems:{product_id:number, quantity:number}[] = [];
     for(let i=0;i<5;i++){
-      createdProducts[i] = await createTestProduct(token);
-    }
+      const product = await createTestProduct(token);
 
-    createdOrder = await createTestOrder(token,createdProducts);
+      if(!product?.id){
+        throw new Error('Product ID is missing');
+      }
+
+      orderItems.push({
+        product_id: product.id,
+        quantity: s
+      })
+      s = s + 10;
+    }
+    createdOrder = await createTestOrder(token, orderItems);
   });
 
   afterAll(async () => {
-    //const client = await postgres.connect();
 
     await client.query(`
       TRUNCATE TABLE orders, products, users RESTART IDENTITY CASCADE;

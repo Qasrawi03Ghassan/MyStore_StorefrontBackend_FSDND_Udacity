@@ -37,15 +37,12 @@ describe('Products API', () => {
       TRUNCATE TABLE products, users RESTART IDENTITY CASCADE;
     `);
 
-    //client.release();
-
     await registerTestUser();
     token = await loginTestUser();
     createdProduct = await createTestProduct(token);
   });
 
   afterAll(async () => {
-    //const client = await postgres.connect();
 
     await client.query(`
       TRUNCATE TABLE products, users RESTART IDENTITY CASCADE;
@@ -65,6 +62,26 @@ describe('Products API', () => {
         expect(res.status).toBe(200);
         expect(res.body.product.id).toBe(createdProduct.id);
     });
+
+    it('GET /api/products/most-popular should return 200 status code with list of top 5 products',async ()=>{
+        const res = await fetch(app.address).get('/api/products/most-popular');
+        const resListLength = res.body.products.length;
+        expect(res.status).toBe(200);
+        expect(res.body.products).toBeInstanceOf(Array);
+        expect(resListLength).toBeLessThanOrEqual(5);
+      });
+
+      it('GET /api/products/get-by-cat?cat=:cat should return 200 status code with list of products of category :cat',async ()=>{
+        const res = await fetch(app.address).get(`/api/products/get-by-cat?cat=${createdProduct.category}`);
+        expect(res.status).toBe(200);
+
+        const products = res.body.products;
+        expect(products).toBeInstanceOf(Array);
+        
+        for(const product of products){
+          expect(product.category).toBe(createdProduct.category);
+        }
+      });
 
     it('POST /api/products should return 201 status code with the created product',async() => {
         const newProduct = {
@@ -89,26 +106,6 @@ describe('Products API', () => {
         };
         const res = await fetch(app.address).post('/api/products').send(newProduct);
         expect(res.status).toBe(401);
-      });
-
-      it('GET /api/products/most-popular should return 200 status code with list of top 5 products',async ()=>{
-        const res = await fetch(app.address).get('/api/products/most-popular');
-        const resListLength = res.body.products.length;
-        expect(res.status).toBe(200);
-        expect(res.body.products).toBeInstanceOf(Array);
-        expect(resListLength).toBeLessThanOrEqual(5);
-      });
-
-      it('GET /api/products/get-by-cat?cat=:cat should return 200 status code with list of products of category :cat',async ()=>{
-        const res = await fetch(app.address).get(`/api/products/get-by-cat?cat=${createdProduct.category}`);
-        expect(res.status).toBe(200);
-
-        const products = res.body.products;
-        expect(products).toBeInstanceOf(Array);
-        
-        for(const product of products){
-          expect(product.category).toBe(createdProduct.category);
-        }
       });
 
       it('PUT /api/products/:id should return 200 status code and change requested product', async ()=>{

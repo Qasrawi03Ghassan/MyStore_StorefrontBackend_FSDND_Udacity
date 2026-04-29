@@ -1,6 +1,6 @@
 import { PoolClient } from 'pg';
 import postgres from '../../../models/database.js';
-import { Product,getProducts, createProduct, updateProduct, deleteProduct, showProduct} from '../../../models/product/product.js';
+import { Product,getProducts, createProduct, updateProduct, deleteProduct, showProduct, getProductsByCategory, getTop5MostPopularProducts} from '../../../models/product/product.js';
 
 const createTestProductsList = async () =>{
     const newProduct1: Product={
@@ -18,10 +18,16 @@ const createTestProductsList = async () =>{
             price:30,
             category:"cat3"
     }
+    const newProduct4: Product={
+            name:"p4",
+            price:40,
+            category:"cat1"
+    }
 
     await createProduct(newProduct1);
     await createProduct(newProduct2);
     await createProduct(newProduct3);
+    await createProduct(newProduct4);
 }
 
 describe('Product model', () => {
@@ -32,11 +38,10 @@ describe('Product model', () => {
     await client.query(`
         TRUNCATE TABLE products RESTART IDENTITY CASCADE;
     `);
-    //client.release();
     });
 
     afterAll(async () => {
-    //const client = await postgres.connect();
+
     await client.query(`
         TRUNCATE TABLE products RESTART IDENTITY CASCADE;
     `);
@@ -78,6 +83,24 @@ describe('Product model', () => {
         expect(checkRead.name).toBe('p2');
         expect(checkRead.price).toEqual(20);
         expect(checkRead.category).toBe('cat2');
+    }); 
+
+    it('Read products by category', async ()=>{
+        await createTestProductsList();
+
+        const checkRead = await getProductsByCategory('cat1');
+
+        expect(checkRead[0]?.category).toBe('cat1');
+        expect(checkRead[1]?.category).toBe('cat1');
+    }); 
+
+    it('Read top 5 products', async ()=>{
+        await createTestProductsList();
+
+        const checkRead = await getTop5MostPopularProducts();
+
+        expect(checkRead).toBeInstanceOf(Array);
+        expect(checkRead.length).toBeLessThanOrEqual(5);
     }); 
 
     it('Update a product by id', async ()=>{

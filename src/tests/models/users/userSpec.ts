@@ -1,8 +1,7 @@
 import { PoolClient } from 'pg';
 import postgres from '../../../models/database.js';
-import { User,getUsers, createUser, showUserById} from '../../../models/user/user.js';
+import { User,getUsers, createUser, showUserById, showUserByFirstNameAndLastName} from '../../../models/user/user.js';
 import bcrypt from 'bcrypt';
-import { after } from 'node:test';
 
 const createTestUsersList = async () =>{
     const newUser1={
@@ -34,11 +33,11 @@ describe('User model', () => {
     await client.query(`
         TRUNCATE TABLE users RESTART IDENTITY CASCADE;
     `);
-    //client.release();
+    
     });
 
     afterAll(async () => {
-    //const client = await postgres.connect();
+    
     await client.query(`
         TRUNCATE TABLE users RESTART IDENTITY CASCADE;
     `);
@@ -46,7 +45,7 @@ describe('User model', () => {
     });
 
     it('CREATE user',async () => {
-        const pwDigest: string = await bcrypt.hash('TestPassword' + process.env.PEPPER, Number.parseInt(process.env.SALT_ROUNDS || '10'));;
+        const pwDigest: string = await bcrypt.hash('TestPassword' + process.env.PEPPER, Number.parseInt(process.env.SALT || '10'));;
         const newUser = {
             first_name:"Test",
             last_name:"User",
@@ -81,5 +80,15 @@ describe('User model', () => {
         expect(checkRead.first_name).toBe('Test2');
         expect(checkRead.last_name).toBe('User2');
         expect(checkRead.password_digest).toBe('pw2');
+    }); 
+
+    it('Read a user by first name and last name', async ()=>{
+        await createTestUsersList();
+
+        const checkRead = await showUserByFirstNameAndLastName('Test2','User2');
+
+        
+        expect(checkRead.first_name).toBe('Test2');
+        expect(checkRead.last_name).toBe('User2');
     }); 
 });

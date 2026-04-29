@@ -39,10 +39,8 @@ describe('Orders model', () => {
         await client.query(`
         TRUNCATE TABLE users,products,orders RESTART IDENTITY CASCADE;
     `);
-        //client.release();
     });
     afterAll(async () => {
-        //const client = await postgres.connect();
         await client.query(`
         TRUNCATE TABLE users,products,orders RESTART IDENTITY CASCADE;
     `);

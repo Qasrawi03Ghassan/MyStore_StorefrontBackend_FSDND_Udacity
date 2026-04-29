@@ -1,5 +1,5 @@
 import postgres from '../../../models/database.js';
-import { getUsers, createUser, showUserById } from '../../../models/user/user.js';
+import { getUsers, createUser, showUserById, showUserByFirstNameAndLastName } from '../../../models/user/user.js';
 import bcrypt from 'bcrypt';
 const createTestUsersList = async () => {
     const newUser1 = {
@@ -28,17 +28,15 @@ describe('User model', () => {
         await client.query(`
         TRUNCATE TABLE users RESTART IDENTITY CASCADE;
     `);
-        //client.release();
     });
     afterAll(async () => {
-        //const client = await postgres.connect();
         await client.query(`
         TRUNCATE TABLE users RESTART IDENTITY CASCADE;
     `);
         client.release();
     });
     it('CREATE user', async () => {
-        const pwDigest = await bcrypt.hash('TestPassword' + process.env.PEPPER, Number.parseInt(process.env.SALT_ROUNDS || '10'));
+        const pwDigest = await bcrypt.hash('TestPassword' + process.env.PEPPER, Number.parseInt(process.env.SALT || '10'));
         ;
         const newUser = {
             first_name: "Test",
@@ -67,6 +65,12 @@ describe('User model', () => {
         expect(checkRead.first_name).toBe('Test2');
         expect(checkRead.last_name).toBe('User2');
         expect(checkRead.password_digest).toBe('pw2');
+    });
+    it('Read a user by first name and last name', async () => {
+        await createTestUsersList();
+        const checkRead = await showUserByFirstNameAndLastName('Test2', 'User2');
+        expect(checkRead.first_name).toBe('Test2');
+        expect(checkRead.last_name).toBe('User2');
     });
 });
 //# sourceMappingURL=userSpec.js.map

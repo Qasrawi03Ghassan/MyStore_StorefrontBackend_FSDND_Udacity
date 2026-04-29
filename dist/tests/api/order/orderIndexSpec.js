@@ -13,7 +13,7 @@ const loginTestUser = async () => {
 const createTestOrder = async (token, products) => {
     const newOrder = {
         products: products.map((p) => ({
-            product_id: p.id,
+            product_id: p.product_id,
             quantity: 10
         }))
     };
@@ -33,7 +33,6 @@ const createTestProduct = async (token) => {
 };
 describe('Orders API', () => {
     let token;
-    let createdProducts = [];
     let createdOrder;
     let client;
     beforeAll(async () => {
@@ -41,16 +40,24 @@ describe('Orders API', () => {
         await client.query(`
       TRUNCATE TABLE orders, products, users RESTART IDENTITY CASCADE;
     `);
-        //client.release();
         await registerTestUser();
         token = await loginTestUser();
+        let s = 10;
+        let orderItems = [];
         for (let i = 0; i < 5; i++) {
-            createdProducts[i] = await createTestProduct(token);
+            const product = await createTestProduct(token);
+            if (!product?.id) {
+                throw new Error('Product ID is missing');
+            }
+            orderItems.push({
+                product_id: product.id,
+                quantity: s
+            });
+            s = s + 10;
         }
-        createdOrder = await createTestOrder(token, createdProducts);
+        createdOrder = await createTestOrder(token, orderItems);
     });
     afterAll(async () => {
-        //const client = await postgres.connect();
         await client.query(`
       TRUNCATE TABLE orders, products, users RESTART IDENTITY CASCADE;
     `);
